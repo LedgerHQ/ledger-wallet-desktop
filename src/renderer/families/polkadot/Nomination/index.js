@@ -31,6 +31,7 @@ import Alert from "~/renderer/components/Alert";
 import LinkWithExternalIcon from "~/renderer/components/LinkWithExternalIcon";
 import ToolTip from "~/renderer/components/Tooltip";
 
+import SetControllerIcon from "~/renderer/icons/Manager";
 import NominateIcon from "~/renderer/icons/Vote";
 import RebondIcon from "~/renderer/icons/LinkIcon";
 import WithdrawUnbondedIcon from "~/renderer/icons/Coins";
@@ -122,6 +123,15 @@ const Nomination = ({ account }: Props) => {
   const onNominate = useCallback(() => {
     dispatch(
       openModal("MODAL_POLKADOT_NOMINATE", {
+        account,
+      }),
+    );
+  }, [account, dispatch]);
+
+  const onSetController = useCallback(() => {
+    dispatch(
+      openModal("MODAL_POLKADOT_SIMPLE_OPERATION", {
+        mode: "setController",
         account,
       }),
     );
@@ -224,7 +234,22 @@ const Nomination = ({ account }: Props) => {
         <TableHeader
           title={<Trans i18nKey="polkadot.nomination.header" />}
           titleProps={{ "data-e2e": "title_Nomination" }}
-        />
+        >
+          <Button
+            id={"account-set-controller-button"}
+            mr={2}
+            color="palette.primary.main"
+            small
+            onClick={onSetController}
+          >
+            <Box horizontal flow={1} alignItems="center">
+              <SetControllerIcon size={12} />
+              <Box>
+                <Trans i18nKey="polkadot.nomination.setController" />
+              </Box>
+            </Box>
+          </Button>
+        </TableHeader>
         <ExternalControllerUnsupportedWarning
           address={polkadotResources?.controller}
           onExternalLink={onExternalLink}

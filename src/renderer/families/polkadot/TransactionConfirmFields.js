@@ -66,6 +66,7 @@ const Warning = ({
     case "rebond":
     case "withdrawUnbonded":
     case "chill":
+    case "setController":
       return null;
     default:
       return (

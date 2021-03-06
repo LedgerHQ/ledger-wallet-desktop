@@ -7,7 +7,7 @@ import type { Account, TransactionStatus, Operation } from "@ledgerhq/live-commo
 
 import type { Transaction } from "@ledgerhq/live-common/lib/families/polkadot/types";
 
-export type Mode = "withdrawUnbonded" | "chill" | "claimRewards";
+export type Mode = "withdrawUnbonded" | "chill" | "claimRewards" | "setController";
 
 export type StepId = "info" | "connectDevice" | "confirmation";
 
