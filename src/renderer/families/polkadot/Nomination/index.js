@@ -237,6 +237,7 @@ const Nomination = ({ account }: Props) => {
         >
           <Button
             id={"account-set-controller-button"}
+            disabled={electionOpen}
             mr={2}
             color="palette.primary.main"
             small
