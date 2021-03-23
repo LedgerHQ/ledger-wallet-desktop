@@ -2898,7 +2898,8 @@
       "bond": "Please confirm on your device to finalize the operation",
       "unbond": "Please confirm on your device to finalize the operation",
       "rebond": "Please confirm on your device to finalize the operation",
-      "withdrawUnbonded": "Please confirm on your device to finalize the operation"
+      "withdrawUnbonded": "Please confirm on your device to finalize the operation",
+      "setController": "Please confirm on your device to finalize the operation"
     },
     "recipientWording": {
       "send": "recipient",
