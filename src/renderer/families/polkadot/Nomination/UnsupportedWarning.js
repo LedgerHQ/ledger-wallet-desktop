@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
 
@@ -7,6 +7,8 @@ import { urls } from "~/config/urls";
 import { darken, lighten } from "~/renderer/styles/helpers";
 
 import Alert from "~/renderer/components/Alert";
+
+import type { Account } from "@ledgerhq/live-common/lib/types";
 
 const Address = styled.span.attrs(() => ({
   color: "wallet",
@@ -23,10 +25,10 @@ const Address = styled.span.attrs(() => ({
 `;
 
 export const ExternalControllerUnsupportedWarning = ({
-  address,
+  controllerAddress,
   onExternalLink,
 }: {
-  address: ?string,
+  controllerAddress: ?string,
   onExternalLink: Function,
 }) => (
   <Alert
@@ -35,9 +37,12 @@ export const ExternalControllerUnsupportedWarning = ({
     learnMoreLabel={<Trans i18nKey="polkadot.nomination.emptyState.info" />}
     style={{ border: "none", margin: 0 }}
   >
-    <Trans i18nKey="polkadot.nomination.externalControllerUnsupported" values={{ address }}>
+    <Trans
+      i18nKey="polkadot.nomination.externalControllerUnsupported"
+      values={{ controllerAddress }}
+    >
       <p>
-        <Address onClick={() => onExternalLink(address)} />
+        <Address onClick={() => onExternalLink(controllerAddress)} />
       </p>
       <p />
     </Trans>
@@ -45,10 +50,10 @@ export const ExternalControllerUnsupportedWarning = ({
 );
 
 export const ExternalStashUnsupportedWarning = ({
-  address,
+  stashAddress,
   onExternalLink,
 }: {
-  address: ?string,
+  stashAddress: ?string,
   onExternalLink: Function,
 }) => (
   <Alert
@@ -57,9 +62,9 @@ export const ExternalStashUnsupportedWarning = ({
     learnMoreLabel={<Trans i18nKey="polkadot.nomination.emptyState.info" />}
     style={{ border: "none", margin: 0 }}
   >
-    <Trans i18nKey="polkadot.nomination.externalStashUnsupported" values={{ address }}>
+    <Trans i18nKey="polkadot.nomination.externalStashUnsupported" values={{ stashAddress }}>
       <p>
-        <Address onClick={() => onExternalLink(address)} />
+        <Address onClick={() => onExternalLink(stashAddress)} />
       </p>
       <p />
     </Trans>

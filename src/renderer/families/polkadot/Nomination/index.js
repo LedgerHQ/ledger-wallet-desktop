@@ -31,8 +31,8 @@ import Alert from "~/renderer/components/Alert";
 import LinkWithExternalIcon from "~/renderer/components/LinkWithExternalIcon";
 import ToolTip from "~/renderer/components/Tooltip";
 
-import SetControllerIcon from "~/renderer/icons/Manager";
 import NominateIcon from "~/renderer/icons/Vote";
+import SetControllerIcon from "~/renderer/icons/Manager";
 import RebondIcon from "~/renderer/icons/LinkIcon";
 import WithdrawUnbondedIcon from "~/renderer/icons/Coins";
 import ChartLineIcon from "~/renderer/icons/ChartLine";
@@ -252,7 +252,7 @@ const Nomination = ({ account }: Props) => {
           </Button>
         </TableHeader>
         <ExternalControllerUnsupportedWarning
-          address={polkadotResources?.controller}
+          controllerAddress={polkadotResources?.controller}
           onExternalLink={onExternalLink}
         />
       </TableContainer>
@@ -267,7 +267,7 @@ const Nomination = ({ account }: Props) => {
           titleProps={{ "data-e2e": "title_Nomination" }}
         />
         <ExternalStashUnsupportedWarning
-          address={polkadotResources?.stash}
+          stashAddress={polkadotResources?.stash}
           onExternalLink={onExternalLink}
         />
       </TableContainer>
