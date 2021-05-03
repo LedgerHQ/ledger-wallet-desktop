@@ -123,6 +123,19 @@ jobs:
         run: yarn nightly
       - uses: ledgerhq/actions/get-package-infos@v2.0.0
         id: post-version
+      - name: install linux dependencies
+        run: sudo apt-get update && sudo apt-get install -y libudev-dev libusb-1.0-0-dev
+      - name: Setup xvfb
+        run: |
+          sudo apt-get -qqy install xvfb libnss3-dev libgconf-2-4 fuse libgtk2.0-0 libgtk-3-0 libasound2 libudev-dev libusb-1.0-0 libusb-1.0-0-dev lib32z1 rpm fakeroot dpkg libdbus-1-dev libx11-dev libavahi-compat-libdnssd-dev g++ gcc-multilib g++-multilib libgtk-3-dev libxtst6 libxss1 libnss3
+      #- name: start the app
+      #  run: chmod +x dist/${{ steps.post-version.outputs.name }}-${{ steps.post-version.outputs.version }}-linux-x86_64.AppImage && dist/${{ steps.post-version.outputs.name }}-${{ steps.post-version.outputs.version }}-linux-x86_64.AppImage
+      #- name: restart the app
+      #  run: sudo dist/${{ steps.post-version.outputs.name }}-${{ steps.post-version.outputs.version }}-linux-x86_64.AppImage
+      #- name: list all process for debug
+      #  run: ps aux
+      #- name: sleep and check the app is running
+      #  run: sleep 20s && pgrep -x ${{ steps.post-version.outputs.name }} >/dev/null
       - name: upload linux app
         uses: actions/upload-artifact@v1
         with:
