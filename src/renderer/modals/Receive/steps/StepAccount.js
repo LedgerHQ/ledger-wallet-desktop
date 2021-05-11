@@ -127,7 +127,7 @@ export default function StepAccount({
       ) : null}
       {account && !receiveTokenMode && tokenTypes.length ? (
         <div>
-          <Alert type="primary" learnMoreUrl={url} mt={3}>
+          <Alert type="warning" learnMoreUrl={url} mt={3}>
             <Trans
               i18nKey={`receive.steps.chooseAccount.${
                 account.type === "TokenAccount" ? "verifyTokenType" : "warningTokenType"
