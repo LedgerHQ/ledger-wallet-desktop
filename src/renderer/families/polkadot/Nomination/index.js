@@ -32,7 +32,6 @@ import LinkWithExternalIcon from "~/renderer/components/LinkWithExternalIcon";
 import ToolTip from "~/renderer/components/Tooltip";
 
 import NominateIcon from "~/renderer/icons/Vote";
-import SetControllerIcon from "~/renderer/icons/Manager";
 import RebondIcon from "~/renderer/icons/LinkIcon";
 import WithdrawUnbondedIcon from "~/renderer/icons/Coins";
 import ChartLineIcon from "~/renderer/icons/ChartLine";
@@ -234,26 +233,11 @@ const Nomination = ({ account }: Props) => {
         <TableHeader
           title={<Trans i18nKey="polkadot.nomination.header" />}
           titleProps={{ "data-e2e": "title_Nomination" }}
-        >
-          <Button
-            id={"account-set-controller-button"}
-            disabled={electionOpen}
-            mr={2}
-            color="palette.primary.main"
-            small
-            onClick={onSetController}
-          >
-            <Box horizontal flow={1} alignItems="center">
-              <SetControllerIcon size={12} />
-              <Box>
-                <Trans i18nKey="polkadot.nomination.setController" />
-              </Box>
-            </Box>
-          </Button>
-        </TableHeader>
+        />
         <ExternalControllerUnsupportedWarning
           controllerAddress={polkadotResources?.controller}
           onExternalLink={onExternalLink}
+          onSetController={onSetController}
         />
       </TableContainer>
     );
