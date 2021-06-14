@@ -1,7 +1,8 @@
 // @flow
 import invariant from "invariant";
 import { useCallback } from "react";
-import { getMainAccount } from "@ledgerhq/live-common/lib/account";
+import { log } from "@ledgerhq/logs";
+import { getMainAccount, formatOperation } from "@ledgerhq/live-common/lib/account";
 import type {
   SignedOperation,
   Operation,
@@ -28,12 +29,17 @@ export const useBroadcast = ({ account, parentAccount }: SignTransactionArgs) =>
         return Promise.resolve(signedOperation.operation);
       }
 
-      return execAndWaitAtLeast(3000, () =>
-        bridge.broadcast({
+      return execAndWaitAtLeast(3000, async () => {
+        const operation = await bridge.broadcast({
           account: mainAccount,
           signedOperation,
-        }),
-      );
+        });
+        log(
+          "transaction-summary",
+          `✔️ broadcasted! optimistic operation: ${formatOperation(mainAccount)(operation)}`,
+        );
+        return operation;
+      });
     },
     [account, parentAccount],
   );
