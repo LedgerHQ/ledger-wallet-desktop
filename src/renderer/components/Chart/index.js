@@ -144,6 +144,7 @@ export default function Chart({
               maxTicksLimit: 7,
               maxRotation: 0.1, // trick to make the graph fit the whole canvas regardless of data
               minRotation: 0,
+              padding: 12,
             },
             time: {
               minUnit: tickXScale === "day" ? "hour" : "day",
