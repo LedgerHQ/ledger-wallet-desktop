@@ -107,7 +107,9 @@ export function AnnouncementProviderWrapper({ children }: Props) {
       handleLoad={loadAnnouncements}
       handleSave={saveAnnouncements}
     >
-      <ServiceStatusProvider autoUpdateDelay={60000}>{children}</ServiceStatusProvider>
+      <ServiceStatusProvider context={{ currencies }} autoUpdateDelay={60000}>
+        {children}
+      </ServiceStatusProvider>
     </AnnouncementProvider>
   );
 }

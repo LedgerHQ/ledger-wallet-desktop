@@ -11,7 +11,7 @@ import { deviceInfo155, mockListAppsResult } from "@ledgerhq/live-common/lib/app
 import { addMockAnnouncement } from "@ledgerhq/live-common/lib/notifications/AnnouncementProvider/api/api.mock";
 import { useAnnouncements } from "@ledgerhq/live-common/lib/notifications/AnnouncementProvider";
 import { toggleMockIncident } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider/api/api.mock";
-import { useServiceStatus } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider";
+import { useFilteredServiceStatus } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider";
 
 import useInterval from "~/renderer/hooks/useInterval";
 import Box from "~/renderer/components/Box";
@@ -260,7 +260,7 @@ const DebugMock = () => {
   const [expandedHistory, setExpandedHistory] = useState(true);
 
   const { updateCache } = useAnnouncements();
-  const { updateData } = useServiceStatus();
+  const { updateData } = useFilteredServiceStatus();
 
   useInterval(() => {
     setQueue(window.mock.events.queue);

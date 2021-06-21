@@ -7,13 +7,13 @@ import WarningIcon from "~/renderer/icons/TriangleWarning";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { openInformationCenter } from "~/renderer/actions/UI";
-import { useServiceStatus } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider/index";
+import { useFilteredServiceStatus } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider/index";
 import useTheme from "~/renderer/hooks/useTheme";
 import Box from "~/renderer/components/Box";
 
 export function ServiceStatusIndicator() {
   const { t } = useTranslation();
-  const { incidents } = useServiceStatus();
+  const { incidents } = useFilteredServiceStatus();
   const warningColor = useTheme("colors.warning");
 
   const dispatch = useDispatch();

@@ -14,7 +14,7 @@ import { CSSTransition } from "react-transition-group";
 import { useSelector, useDispatch } from "react-redux";
 import { informationCenterStateSelector } from "~/renderer/reducers/UI";
 import { setTabInformationCenter } from "~/renderer/actions/UI";
-import { useServiceStatus } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider/index";
+import { useFilteredServiceStatus } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider/index";
 
 const FADE_DURATION = 200;
 
@@ -43,7 +43,7 @@ export const InformationDrawer = ({
 }) => {
   const { t } = useTranslation();
   const { allIds, seenIds } = useAnnouncements();
-  const { incidents } = useServiceStatus();
+  const { incidents } = useFilteredServiceStatus();
   const unseenCount = allIds.length - seenIds.length;
   const incidentCount = incidents.length;
   const { tabId } = useSelector(informationCenterStateSelector);

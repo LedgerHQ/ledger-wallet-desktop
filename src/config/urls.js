@@ -167,6 +167,7 @@ export const urls = {
     SyncError:
       "https://support.ledger.com/hc/en-us/articles/360012109220?utm_source=ledger_live_desktop&utm_medium=self_referral&utm_content=error_syncerror",
     StratisDown2021Warning: "https://support.ledger.com/hc/en-us/articles/115005175329",
+    ServiceStatusWarning: "https://status.ledger.com",
   },
   compound:
     "https://support.ledger.com/hc/en-us/articles/360017215099?utm_source=ledger_live_desktop&utm_medium=self_referral&utm_content=compound",

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import TriangleWarning from "~/renderer/icons/TriangleWarning";
 import React from "react";
 import { openURL } from "~/renderer/linking";
-import { useServiceStatus } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider";
+import { useFilteredServiceStatus } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider";
 import type { Incident } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider/types";
 import Text from "~/renderer/components/Text";
 import SuccessAnimatedIcon from "~/renderer/components/SuccessAnimatedIcon";
@@ -148,7 +148,7 @@ const PanelContainer: ThemedComponent<{}> = styled.div`
 `;
 
 export function ServiceStatusPanel() {
-  const { incidents } = useServiceStatus();
+  const { incidents } = useFilteredServiceStatus();
 
   console.log({ incidents });
 
