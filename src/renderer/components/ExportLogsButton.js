@@ -4,11 +4,10 @@ import { ipcRenderer, webFrame, remote } from "electron";
 import React, { useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { getAllEnvs } from "@ledgerhq/live-common/lib/env";
+import { getAllEnvs, getEnv } from "@ledgerhq/live-common/lib/env";
 import type { Account } from "@ledgerhq/live-common/lib/types";
 import KeyHandler from "react-key-handler";
 import logger from "~/logger";
-import getUser from "~/helpers/user";
 import Button from "~/renderer/components/Button";
 import type { Props as ButtonProps } from "~/renderer/components/Button";
 import { accountsSelector } from "~/renderer/reducers/accounts";
@@ -68,14 +67,13 @@ const ExportLogsBtn = ({
 
   const exportLogs = useCallback(async () => {
     const resourceUsage = webFrame.getResourceUsage();
-    const user = await getUser();
     logger.log("exportLogsMeta", {
       resourceUsage,
       release: __APP_VERSION__,
       git_commit: __GIT_REVISION__,
       environment: __DEV__ ? "development" : "production",
       userAgent: window.navigator.userAgent,
-      userAnonymousId: user.id,
+      userAnonymousId: getEnv("USER_ID"),
       env: {
         ...getAllEnvs(),
       },

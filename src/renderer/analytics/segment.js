@@ -5,7 +5,7 @@ import invariant from "invariant";
 import { ReplaySubject } from "rxjs";
 import logger from "~/logger";
 import { getSystemLocale } from "~/helpers/systemLocale";
-import user from "~/helpers/user";
+import { getEnv } from "@ledgerhq/live-common/lib/env";
 import {
   sidebarCollapsedSelector,
   langAndRegionSelector,
@@ -68,9 +68,9 @@ const extraProperties = store => {
 
 let storeInstance; // is the redux store. it's also used as a flag to know if analytics is on or off.
 
-export const start = async (store: *) => {
-  if (!user || process.env.MOCK || process.env.SPECTRON_RUN) return;
-  const { id } = await user();
+export const start = (store: *) => {
+  const id = getEnv("USER_ID");
+  if (!id || process.env.MOCK || process.env.SPECTRON_RUN) return;
   logger.analyticsStart(id, extraProperties(store));
   storeInstance = store;
   const { analytics } = window;

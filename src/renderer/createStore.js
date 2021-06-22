@@ -3,19 +3,21 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import logger from "~/renderer/middlewares/logger";
-import analytics from "~/renderer/middlewares/analytics";
 import reducers from "~/renderer/reducers";
 
 type Props = {
   state?: Object,
   dbMiddleware?: Function,
+  analyticsMiddleware?: Function,
 };
 
-export default ({ state, dbMiddleware }: Props) => {
+export default ({ state, dbMiddleware, analyticsMiddleware }: Props) => {
   const middlewares = [thunk, logger];
 
   // middlewares.push(require('./../middlewares/sentry').default)
-  middlewares.push(analytics);
+  if (analyticsMiddleware) {
+    middlewares.push(analyticsMiddleware);
+  }
 
   if (dbMiddleware) {
     middlewares.push(dbMiddleware);

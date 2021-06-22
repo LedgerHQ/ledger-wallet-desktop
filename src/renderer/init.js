@@ -12,19 +12,23 @@ import { remote, webFrame, ipcRenderer } from "electron";
 import { render } from "react-dom";
 import moment from "moment";
 import _ from "lodash";
-import { reload, getKey, loadLSS } from "~/renderer/storage";
+import { reload, getKey, setKey, loadLSS } from "~/renderer/storage";
 import { hardReset } from "~/renderer/reset";
 
+import analytics from "~/renderer/middlewares/analytics";
 import "~/renderer/styles/global";
 import "~/renderer/live-common-setup";
 import { getLocalStorageEnvs } from "~/renderer/experimental";
 import "~/renderer/i18n/init";
+import { setBridgeProxy } from "@ledgerhq/live-common/lib/bridge";
+import { getAccountBridge, getCurrencyBridge } from "./bridge/proxy";
+import { setEnvOnAllThreads } from "./../helpers/env";
+import { v4 as uuid } from "uuid";
 
 import logger, { enableDebugLogger } from "~/logger";
 import LoggerTransport from "~/logger/logger-transport-renderer";
 import { enableGlobalTab, disableGlobalTab, isGlobalTabEnabled } from "~/config/global-tab";
 import sentry from "~/sentry/browser";
-import { setEnvOnAllThreads } from "~/helpers/env";
 import { command } from "~/renderer/commands";
 import dbMiddleware from "~/renderer/middlewares/db";
 import createStore from "~/renderer/createStore";
@@ -61,6 +65,20 @@ async function init() {
     connect,
   });
 
+  const oldUserId = global.localStorage.getItem("userId");
+  if (oldUserId) {
+    global.localStorage.removeItem("userId");
+  }
+
+  let user = await getKey("app", "user");
+  if (!user) {
+    user = { id: uuid() };
+    setKey("app", "user", user);
+  }
+  setEnvOnAllThreads("USER_ID", user.id);
+
+  setBridgeProxy({ getAccountBridge, getCurrencyBridge });
+
   if (process.env.SPECTRON_RUN) {
     const spectronData = await getKey("app", "SPECTRON_RUN", {});
     _.each(spectronData.localStorage, (value, key) => {
@@ -84,7 +102,14 @@ async function init() {
     await hardReset();
   }
 
-  const store = createStore({ dbMiddleware });
+  const store = createStore({
+    dbMiddleware,
+    analyticsMiddleware: analytics({
+      migration: {
+        ...(oldUserId ? { oldUserId } : {}),
+      },
+    }),
+  });
 
   ipcRenderer.once("deep-linking", (event, url) => {
     store.dispatch(setDeepLinkUrl(url));

@@ -1,12 +1,12 @@
 // @flow
 
 import { hasCompletedOnboardingSelector } from "~/renderer/reducers/settings";
-import { start } from "~/renderer/analytics/segment";
+import { start, track } from "~/renderer/analytics/segment";
 import type { State } from "~/renderer/reducers";
 
 let isAnalyticsStarted = false;
 
-export default (store: *) => (next: *) => (action: *) => {
+export default ({ migration }: { migration?: any }) => (store: *) => (next: *) => (action: *) => {
   next(action);
   const state: State = store.getState();
   const hasCompletedOnboarding = hasCompletedOnboardingSelector(state);
@@ -14,5 +14,9 @@ export default (store: *) => (next: *) => (action: *) => {
   if (hasCompletedOnboarding && !isAnalyticsStarted) {
     isAnalyticsStarted = true;
     start(store);
+
+    if (Object.keys(migration || {}).length) {
+      track("migration-event", migration);
+    }
   }
 };

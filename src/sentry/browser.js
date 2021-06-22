@@ -2,12 +2,12 @@
 
 import Raven from "raven-js";
 
-import user from "./../helpers/user";
+import { getEnv } from "@ledgerhq/live-common/lib/env";
 import install from "./install";
 
-export default async (shouldSendCallback: () => boolean) => {
-  const u = await user();
-  install(Raven, shouldSendCallback, u.id);
+export default (shouldSendCallback: () => boolean) => {
+  const uId = getEnv("USER_ID");
+  install(Raven, shouldSendCallback, uId);
 };
 
 export const captureException = (e: Error) => {
