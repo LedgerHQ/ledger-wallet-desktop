@@ -250,13 +250,14 @@ class AccountRowItem extends PureComponent<Props, State> {
         hidden={hidden}
       >
         <span style={{ position: "absolute", top: -70 }} ref={this.scrollTopFocusRef} />
-        <Row expanded={expanded} tokens={showTokensIndicator} key={mainAccount.id}>
-          <AccountContextMenu account={account}>
-            <RowContent
-              disabled={disabled}
-              onClick={this.onClick}
-              className="accounts-account-row-item-content"
-            >
+        <AccountContextMenu account={account}>
+          <Row
+            expanded={expanded}
+            tokens={showTokensIndicator}
+            key={mainAccount.id}
+            onClick={this.onClick}
+          >
+            <RowContent disabled={disabled} className="accounts-account-row-item-content">
               <Header account={account} name={mainAccount.name} />
               <Box flex="12%">
                 <div>
@@ -271,49 +272,53 @@ class AccountRowItem extends PureComponent<Props, State> {
                 parentId={account.type !== "Account" ? account.parentId : undefined}
               />
             </RowContent>
-          </AccountContextMenu>
-          {showTokensIndicator && expanded ? (
-            <TokenContentWrapper>
-              <TokenBarIndicator onClick={this.toggleAccordion} />
-              <TokenContent>
-                {tokens &&
-                  tokens.map((token, index) => (
-                    <AccountContextMenu key={token.id} account={token} parentAccount={mainAccount}>
-                      <TokenRow
-                        nested
-                        index={index}
-                        range={range}
+            {showTokensIndicator && expanded ? (
+              <TokenContentWrapper>
+                <TokenBarIndicator onClick={this.toggleAccordion} />
+                <TokenContent>
+                  {tokens &&
+                    tokens.map((token, index) => (
+                      <AccountContextMenu
+                        key={token.id}
                         account={token}
-                        // $FlowFixMe
                         parentAccount={mainAccount}
-                        onClick={onClick}
-                      />
-                    </AccountContextMenu>
-                  ))}
-              </TokenContent>
-            </TokenContentWrapper>
-          ) : null}
-          {showTokensIndicator && !disabled && tokens && (
-            <TokenShowMoreIndicator
-              expanded={expanded}
-              event="Account view tokens expand"
-              eventProperties={{ currencyName: currency.name }}
-              onClick={this.toggleAccordion}
-            >
-              <Box horizontal alignContent="center" justifyContent="center">
-                <Text color="wallet" ff="Inter|SemiBold" fontSize={4}>
-                  <Trans
-                    i18nKey={translationMap[expanded ? "hide" : "see"]}
-                    values={{ tokenCount: tokens.length }}
-                  />
-                </Text>
-                <IconAngleDown expanded={expanded}>
-                  <AngleDown size={16} />
-                </IconAngleDown>
-              </Box>
-            </TokenShowMoreIndicator>
-          )}
-        </Row>
+                      >
+                        <TokenRow
+                          nested
+                          index={index}
+                          range={range}
+                          account={token}
+                          // $FlowFixMe
+                          parentAccount={mainAccount}
+                          onClick={onClick}
+                        />
+                      </AccountContextMenu>
+                    ))}
+                </TokenContent>
+              </TokenContentWrapper>
+            ) : null}
+            {showTokensIndicator && !disabled && tokens && (
+              <TokenShowMoreIndicator
+                expanded={expanded}
+                event="Account view tokens expand"
+                eventProperties={{ currencyName: currency.name }}
+                onClick={this.toggleAccordion}
+              >
+                <Box horizontal alignContent="center" justifyContent="center">
+                  <Text color="wallet" ff="Inter|SemiBold" fontSize={4}>
+                    <Trans
+                      i18nKey={translationMap[expanded ? "hide" : "see"]}
+                      values={{ tokenCount: tokens.length }}
+                    />
+                  </Text>
+                  <IconAngleDown expanded={expanded}>
+                    <AngleDown size={16} />
+                  </IconAngleDown>
+                </Box>
+              </TokenShowMoreIndicator>
+            )}
+          </Row>
+        </AccountContextMenu>
       </div>
     );
   }
