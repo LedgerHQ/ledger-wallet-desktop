@@ -264,7 +264,7 @@ const Form = ({
   return (
     <>
       <TrackPage category="Swap" name="Form" />
-      <Card flow={1}>
+      <Card flow={1} id="swap-form">
         {fromCurrency ? <CurrencyDownStatusAlert currencies={[fromCurrency]} /> : null}
         <TradeMethod
           tradeMethod={tradeMethod}

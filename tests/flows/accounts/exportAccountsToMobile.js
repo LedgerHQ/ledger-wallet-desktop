@@ -21,7 +21,7 @@ const exportAccountsToMobile = (currency = "global") => {
 
     it("closes the export accounts modal", async () => {
       await exportAccountsModal.confirm();
-      expect(await exportAccountsModal.waitForClosed()).toBe(true);
+      expect(await exportAccountsModal.waitForDisplayed({ reverse: true })).toBe(true);
     });
   });
 };

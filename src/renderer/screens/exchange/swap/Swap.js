@@ -53,6 +53,7 @@ const Swap = ({ defaultCurrency, defaultAccount, defaultParentAccount, setTabInd
     <NotAvailable />
   ) : (
     <Form
+      id="swap-form"
       providers={providers}
       defaultCurrency={defaultCurrency}
       defaultAccount={defaultAccount}

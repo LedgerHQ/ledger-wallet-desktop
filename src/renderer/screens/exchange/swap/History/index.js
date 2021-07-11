@@ -157,7 +157,7 @@ const History = () => {
               </Alert>
             </Head>
             {mappedSwapOperations.map(section => (
-              <>
+              <div id="swap-history">
                 <SectionTitle day={section.day} />
                 <Box>
                   {section.data.map(mappedSwapOperation => (
@@ -168,11 +168,17 @@ const History = () => {
                     />
                   ))}
                 </Box>
-              </>
+              </div>
             ))}
           </Card>
         ) : (
-          <Card flex={1} p={150} alignItems={"center"} justifyContent={"center"}>
+          <Card
+            flex={1}
+            p={150}
+            alignItems={"center"}
+            justifyContent={"center"}
+            id="swap-history-empty-state"
+          >
             <Text mb={1} ff="Inter|SemiBold" fontSize={16} color="palette.text.shade100">
               <Trans i18nKey={"swap.history.empty.title"} />
             </Text>

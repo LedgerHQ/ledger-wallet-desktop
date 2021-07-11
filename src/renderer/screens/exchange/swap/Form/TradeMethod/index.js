@@ -52,7 +52,7 @@ const TradeMethod = ({
         <Trans i18nKey={`swap.form.tradeMethod.title`} />
       </Text>
       <Tippy placement={"top"} arrow={false} content={<TooltipContent />}>
-        <Box>
+        <Box id="swap-form-trade-method-info">
           <IconInfoCircle size={12} />
         </Box>
       </Tippy>

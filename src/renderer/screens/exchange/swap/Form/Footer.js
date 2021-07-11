@@ -50,7 +50,7 @@ const Footer = ({
       />
       <Box horizontal>
         <Button
-          id="swap-form-continue-button"
+          id="swap-form-exchange-button"
           onClick={onStartSwap}
           primary
           event="SwapFormOpenModal"

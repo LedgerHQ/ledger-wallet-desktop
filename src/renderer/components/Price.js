@@ -16,6 +16,7 @@ import IconActivity from "~/renderer/icons/Activity";
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 
 type Props = {
+  id?: string,
   unit?: Unit,
   rate?: BigNumber,
   showAllDigits?: boolean,
@@ -33,6 +34,7 @@ type Props = {
 };
 
 export default function Price({
+  id,
   from,
   to,
   unit,
@@ -83,7 +85,7 @@ export default function Price({
   const subMagnitude = counterValue.lt(1) || showAllDigits ? 1 : 0;
 
   return (
-    <PriceWrapper color={color} fontSize={fontSize}>
+    <PriceWrapper id={id} color={color} fontSize={fontSize}>
       {withIcon ? (
         <IconActivity size={iconSize || 12} style={{ color: activityColor, marginRight: 4 }} />
       ) : null}

@@ -14,7 +14,7 @@ describe("sub accounts", () => {
   describe("When parent is missing", () => {
     afterAll(async () => {
       await modalPage.close();
-      await modalPage.waitForClosed();
+      await modalPage.waitForDisplayed({ reverse: true });
     });
     it("should find token in the currencies list", async () => {
       await addAccountsModal.goToAddAccount();
@@ -33,7 +33,7 @@ describe("sub accounts", () => {
   describe("When parent present but subaccount missing", () => {
     afterAll(async () => {
       await modalPage.close();
-      await modalPage.waitForClosed();
+      await modalPage.waitForDisplayed({ reverse: true })();
     });
     it("should find token in the currencies list", async () => {
       await addAccountsModal.goToAddAccount();

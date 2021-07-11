@@ -53,17 +53,9 @@ export default class ModalPage extends Page {
     return this.$("#disable-password-input");
   }
 
-  async waitForDisplayed() {
+  async waitForDisplayed(o) {
     const elem = await this.container();
-    const visible = await elem.waitForDisplayed();
-
-    return visible;
-  }
-
-  async waitForClosed() {
-    const elem = await this.container();
-    const closed = elem.waitForDisplayed({ timeout: 3000, reverse: true });
-    return closed;
+    return elem.waitForDisplayed(o);
   }
 
   async close() {

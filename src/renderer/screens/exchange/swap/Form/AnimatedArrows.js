@@ -22,6 +22,7 @@ const AnimatedArrows = ({ size = 16, disabled = false }: { size: number, disable
   const [nonce, setNonce] = useState(0);
   return (
     <Container
+      id="swap-arrow"
       disabled={disabled}
       onClick={() => {
         if (!disabled) setNonce(nonce + 1);

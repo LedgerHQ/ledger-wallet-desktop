@@ -12,7 +12,9 @@ import AccountsPage from "./po/accounts.page";
 import AccountPage from "./po/account.page";
 import PortfolioPage from "./po/portfolio.page";
 import SettingsPage from "./po/settings.page";
+import SwapPage from "./po/swap.page";
 import ManagerPage from "./po/manager.page";
+import DevicePage from "./po/device.page";
 import WCConnectedPage from "./po/wcconnected.page";
 import AddAccountsModal from "./po/addAccountsModal.page";
 import AccountSettingsModal from "./po/accountSettingsModal.page";
@@ -83,8 +85,10 @@ let app;
 let page;
 let portfolioPage;
 let settingsPage;
+let swapPage;
 let managerPage;
 let modalPage;
+let devicePage;
 let drawerPage;
 let accountPage;
 let accountsPage;
@@ -154,7 +158,6 @@ export default function initialize(name, { userData, env = {}, disableStartSnap 
 
     app = new Application({
       path: electronPath, // just to make spectron happy since we override everything below
-      waitTimeout: 15000,
       webdriverOptions: {
         capabilities: {
           "goog:chromeOptions": {
@@ -183,7 +186,9 @@ export default function initialize(name, { userData, env = {}, disableStartSnap 
     accountsPage = new AccountsPage(app);
     portfolioPage = new PortfolioPage(app);
     settingsPage = new SettingsPage(app);
+    swapPage = new SwapPage(app);
     managerPage = new ManagerPage(app);
+    devicePage = new DevicePage(app);
     wcConnectedPage = new WCConnectedPage(app);
     addAccountsModal = new AddAccountsModal(app);
     accountSettingsModal = new AccountSettingsModal(app);
@@ -289,9 +294,11 @@ export {
   accountsPage,
   portfolioPage,
   settingsPage,
+  swapPage,
   managerPage,
   wcConnectedPage,
   modalPage,
+  devicePage,
   drawerPage,
   hideTokenModal,
   walletConnectPasteLinkModal,

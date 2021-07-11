@@ -532,7 +532,7 @@ export const renderSwapDeviceConfirmation = ({
   estimatedFees?: string,
 }) => {
   return (
-    <>
+    <div id="swap-modal-device-confirmation">
       <Alert type="primary" learnMoreUrl={urls.swap.learnMore} mb={3}>
         <Trans i18nKey="DeviceAction.swap.notice" />
       </Alert>
@@ -579,7 +579,7 @@ export const renderSwapDeviceConfirmation = ({
         },
       )}
       {renderVerifyUnwrapped({ modelId, type })}
-    </>
+    </div>
   );
 };
 
@@ -610,7 +610,7 @@ export const renderLoading = ({
   modelId: DeviceModelId,
   children?: React$Node,
 }) => (
-  <Wrapper id="deviceAction-loading">
+  <Wrapper id="device-action-loader">
     <Header />
     <AnimationWrapper modelId={modelId}>
       <BigSpinner size={50} />

@@ -55,7 +55,7 @@ const exportOperationsHistory = (currency = "global") => {
 
     it("closes the export operations history modal", async () => {
       await exportOperationsHistoryModal.close();
-      expect(await exportOperationsHistoryModal.waitForClosed()).toBe(true);
+      expect(await exportOperationsHistoryModal.waitForDisplayed({ reverse: true })).toBe(true);
     });
   });
 };

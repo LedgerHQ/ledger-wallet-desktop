@@ -97,13 +97,20 @@ const Provider = ({
         {loadingRates || (rate && fromCurrency && currency) ? (
           <Box horizontal mt={"6px"} alignItems={"center"}>
             {loadingRates ? (
-              <Box horizontal alignItems={"center"} justifyContent={"flex-end"} ml={3} flex={1}>
+              <Box
+                id="swap-form-rates-loader"
+                horizontal
+                alignItems={"center"}
+                justifyContent={"flex-end"}
+                ml={3}
+                flex={1}
+              >
                 <Spinner size={12} isRotating={loadingRates} />
               </Box>
             ) : rate && fromCurrency && currency ? (
               <>
                 {ratesExpiration && tradeMethod === "fixed" ? (
-                  <CountdownTimerWrapper horizontal>
+                  <CountdownTimerWrapper horizontal id="swap-form-countdown">
                     <Box mr={1}>
                       <AnimatedCountdown fillColor={fillColor} size={10} />
                     </Box>
@@ -124,6 +131,7 @@ const Provider = ({
                   )}
                 </Box>
                 <Price
+                  id="swap-form-price"
                   withEquality
                   withIcon={false}
                   from={fromCurrency}

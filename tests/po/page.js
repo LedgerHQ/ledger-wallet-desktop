@@ -60,6 +60,10 @@ export default class Page {
     return this.$("#drawer-receive-button");
   }
 
+  async drawerSwapButton() {
+    return this.$("#drawer-swap-button");
+  }
+
   async drawerManagerButton() {
     return this.$("#drawer-manager-button");
   }
@@ -128,6 +132,11 @@ export default class Page {
   async getThemeColor() {
     const bgColor = await this.theme.getCSSProperty("background-color");
     return bgColor.parsed.hex;
+  }
+
+  async goToSwap() {
+    const btn = await this.drawerSwapButton();
+    await btn.click();
   }
 
   async goToManager() {

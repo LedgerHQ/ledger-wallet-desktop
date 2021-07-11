@@ -23,7 +23,7 @@ const hideToken = (currency = "global") => {
       await accountPage.hideFirstToken();
 
       await hideTokenModal.confirm();
-      await hideTokenModal.waitForClosed();
+      await hideTokenModal.waitForDisplayed({ reverse: true });
 
       await app.client.waitForSync();
 

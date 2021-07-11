@@ -43,8 +43,8 @@ const TooltipContent = () => {
   const lockColor = useTheme("colors.palette.text.shade50");
 
   return (
-    <DropContainer>
-      <Box horizontal alignItems={"center"}>
+    <DropContainer id="swap-form-trade-method-tooltip">
+      <Box id="swap-form-trade-method-float" horizontal alignItems={"center"}>
         <IconLockOpen size={24} color={lockColor} />
         <Box ml={12} textAlign={"left"} flex={1}>
           <Text ff="Inter|SemiBold" color={"palette.text.shade100"} fontSize={3}>
@@ -56,7 +56,7 @@ const TooltipContent = () => {
         </Box>
       </Box>
       <SeparatorLine />
-      <Box horizontal alignItems={"center"}>
+      <Box id="swap-form-trade-method-fixed" horizontal alignItems={"center"}>
         <IconLock size={24} color={lockColor} />
         <Box ml={12} textAlign={"left"} flex={1}>
           <Text ff="Inter|SemiBold" color={"palette.text.shade100"} fontSize={3}>

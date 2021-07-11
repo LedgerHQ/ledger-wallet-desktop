@@ -37,6 +37,7 @@ const ToAmount = ({
         {unit ? (
           <>
             <InputCurrency
+              id="swap-form-to-amount"
               disabled
               key={unit.code}
               defaultUnit={unit}

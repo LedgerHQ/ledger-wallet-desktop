@@ -281,8 +281,7 @@ export const StepSummaryFooter = ({
           onClick={onBeforeContinue}
           disabled={disabled && !alreadyAcceptedTerms}
           primary
-          id="swap-modal-summary-continue-button"
-          data-e2e="modal_buttonContinue_swap"
+          id="swap-modal-summary-confirm-button"
         >
           <Trans i18nKey="common.confirm" />
         </Button>
