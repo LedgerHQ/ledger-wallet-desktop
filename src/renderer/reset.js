@@ -49,8 +49,8 @@ export function onUnusualInternalProcessError() {
 }
 
 function reload() {
-  require("electron")
-    .remote.getCurrentWindow()
+  require("@electron/remote")
+    .getCurrentWindow()
     .webContents.reload();
 }
 

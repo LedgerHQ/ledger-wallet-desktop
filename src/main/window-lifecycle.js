@@ -55,6 +55,7 @@ const defaultWindowOptions = {
     devTools: __DEV__ || DEV_TOOLS,
     experimentalFeatures: true,
     nodeIntegration: true,
+    contextIsolation: false,
   },
 };
 

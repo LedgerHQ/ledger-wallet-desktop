@@ -14,6 +14,8 @@ import db from "./db";
 import debounce from "lodash/debounce";
 import logger from "~/logger";
 
+require("@electron/remote/main").initialize();
+
 app.allowRendererProcessReuse = false;
 
 const gotLock = app.requestSingleInstanceLock();
