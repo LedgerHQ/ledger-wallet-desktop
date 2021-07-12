@@ -1,5 +1,6 @@
 // @flow
 
+import { BigNumber } from "bignumber.js";
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
@@ -7,6 +8,8 @@ import { useSelector } from "react-redux";
 import { Trans } from "react-i18next";
 import { getAccountUnit } from "@ledgerhq/live-common/lib/account";
 import { formatCurrencyUnit } from "@ledgerhq/live-common/lib/currencies";
+import { usePolkadotPreloadData } from "@ledgerhq/live-common/lib/families/polkadot/react";
+import { hasMinimumBondBalance } from "@ledgerhq/live-common/lib/families/polkadot/logic";
 
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 
@@ -17,6 +20,7 @@ import Discreet, { useDiscreetMode } from "~/renderer/components/Discreet";
 import Box from "~/renderer/components/Box/Box";
 import Text from "~/renderer/components/Text";
 import InfoCircle from "~/renderer/icons/InfoCircle";
+import TriangleWarning from "~/renderer/icons/TriangleWarning";
 import ToolTip from "~/renderer/components/Tooltip";
 
 const Wrapper: ThemedComponent<*> = styled(Box).attrs(() => ({
@@ -38,21 +42,25 @@ const BalanceDetail = styled(Box).attrs(() => ({
   }
 `;
 
-const TitleWrapper = styled(Box).attrs(() => ({ horizontal: true, alignItems: "center", mb: 1 }))``;
+const TitleWrapper = styled(Box).attrs(props => ({
+  color: props.warning ? props.theme.colors.orange : "palette.text.shade60",
+  horizontal: true,
+  alignItems: "center",
+  mb: 1,
+}))``;
 
 const Title = styled(Text).attrs(() => ({
   fontSize: 4,
   ff: "Inter|Medium",
-  color: "palette.text.shade60",
 }))`
   line-height: ${p => p.theme.space[4]}px;
   margin-right: ${p => p.theme.space[1]}px;
 `;
 
-const AmountValue = styled(Text).attrs(() => ({
+const AmountValue = styled(Text).attrs(props => ({
   fontSize: 6,
   ff: "Inter|SemiBold",
-  color: "palette.text.shade100",
+  color: props.warning ? props.theme.colors.orange : "palette.text.shade100",
 }))``;
 
 type Props = {
@@ -63,6 +71,8 @@ type Props = {
 const AccountBalanceSummaryFooter = ({ account, countervalue }: Props) => {
   const discreet = useDiscreetMode();
   const locale = useSelector(localeSelector);
+  const preloaded = usePolkadotPreloadData();
+
   if (!account.polkadotResources) return null;
 
   const { spendableBalance: _spendableBalance, polkadotResources } = account;
@@ -71,6 +81,8 @@ const AccountBalanceSummaryFooter = ({ account, countervalue }: Props) => {
     unlockingBalance: _unlockingBalance,
     unlockedBalance: _unlockedBalance,
   } = polkadotResources;
+  const minimumBondBalance = BigNumber(preloaded.minimumBondBalance);
+  const hasMinBondBalance = hasMinimumBondBalance(account);
 
   const unit = getAccountUnit(account);
 
@@ -103,6 +115,10 @@ const AccountBalanceSummaryFooter = ({ account, countervalue }: Props) => {
   );
 
   const unlockedBalance = formatCurrencyUnit(unit, _unlockedBalance, formatConfig);
+  const minimumBondBalanceStr = formatCurrencyUnit(unit, minimumBondBalance, {
+    ...formatConfig,
+    discreet: false,
+  });
 
   return (
     <Wrapper>
@@ -121,15 +137,26 @@ const AccountBalanceSummaryFooter = ({ account, countervalue }: Props) => {
       </BalanceDetail>
       {_lockedBalance.gt(0) && (
         <BalanceDetail>
-          <ToolTip content={<Trans i18nKey="polkadot.lockedTooltip" />}>
-            <TitleWrapper>
+          <ToolTip
+            content={
+              hasMinBondBalance ? (
+                <Trans i18nKey="polkadot.lockedTooltip" />
+              ) : (
+                <Trans
+                  i18nKey="polkadot.bondedBalanceBelowMinimum"
+                  values={{ minimumBondBalance: minimumBondBalanceStr }}
+                />
+              )
+            }
+          >
+            <TitleWrapper warning={!hasMinBondBalance}>
               <Title>
                 <Trans i18nKey="polkadot.lockedBalance" />
               </Title>
-              <InfoCircle size={13} />
+              {hasMinBondBalance ? <InfoCircle size={13} /> : <TriangleWarning size={13} />}
             </TitleWrapper>
           </ToolTip>
-          <AmountValue>
+          <AmountValue warning={!hasMinBondBalance}>
             <Discreet>{lockedBalance}</Discreet>
           </AmountValue>
         </BalanceDetail>

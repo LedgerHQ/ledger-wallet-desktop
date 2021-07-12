@@ -1,4 +1,5 @@
 // @flow
+import { BigNumber } from "bignumber.js";
 import invariant from "invariant";
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import type { TFunction } from "react-i18next";
@@ -6,9 +7,13 @@ import styled from "styled-components";
 import { Trans } from "react-i18next";
 
 import { getAccountUnit } from "@ledgerhq/live-common/lib/account";
+import { formatCurrencyUnit } from "@ledgerhq/live-common/lib/currencies";
 import { getDefaultExplorerView, getAddressExplorer } from "@ledgerhq/live-common/lib/explorers";
 import type { Account, TransactionStatus } from "@ledgerhq/live-common/lib/types";
-import { MAX_NOMINATIONS } from "@ledgerhq/live-common/lib/families/polkadot/logic";
+import {
+  MAX_NOMINATIONS,
+  hasMinimumBondBalance,
+} from "@ledgerhq/live-common/lib/families/polkadot/logic";
 import {
   usePolkadotPreloadData,
   useSortedValidators,
@@ -79,6 +84,10 @@ const MaybeChillLink: ThemedComponent<{}> = styled(Label).attrs(p => ({
   }
 `;
 
+const SimpleList: ThemedComponent<{}> = styled.ul`
+  list-style: none;
+`;
+
 // returns the first error
 function getStatusError(status, type = "errors"): ?Error {
   if (!status || !status[type]) return null;
@@ -115,10 +124,20 @@ const ValidatorField = ({
   invariant(polkadotResources && nominations, "polkadot transaction required");
 
   const unit = getAccountUnit(account);
+  const formatConfig = {
+    disableRounding: true,
+    alwaysShowSign: false,
+    showCode: true,
+    discreet: false,
+  };
 
-  const { staking, validators: polkadotValidators } = usePolkadotPreloadData();
-  const SR = useSortedValidators(search, polkadotValidators, nominations);
+  const preloaded = usePolkadotPreloadData();
+  const { staking, validators: polkadotValidators } = preloaded;
   const { maxNominatorRewardedPerValidator } = staking ?? {};
+  const SR = useSortedValidators(search, polkadotValidators, nominations);
+  const hasMinBondBalance = hasMinimumBondBalance(account);
+  const minimumBondBalance = BigNumber(preloaded.minimumBondBalance);
+  const minimumBondBalanceStr = formatCurrencyUnit(unit, minimumBondBalance, formatConfig);
 
   // Addresses that are no longer validators
   const nonValidators = nominations
@@ -194,12 +213,26 @@ const ValidatorField = ({
 
   return (
     <>
-      {nonValidators.length ? (
+      {nonValidators.length || !hasMinBondBalance ? (
         <Alert type="warning" mx="12px" mb="20px">
-          <Trans
-            i18nKey="polkadot.nominate.steps.validators.notValidatorsRemoved"
-            values={{ count: nonValidators.length }}
-          />
+          <SimpleList>
+            {!hasMinBondBalance ? (
+              <li>
+                <Trans
+                  i18nKey="polkadot.bondedBalanceBelowMinimum"
+                  values={{ minimumBondBalance: minimumBondBalanceStr }}
+                />
+              </li>
+            ) : null}
+            {nonValidators.length ? (
+              <li>
+                <Trans
+                  i18nKey="polkadot.nominate.steps.validators.notValidatorsRemoved"
+                  values={{ count: nonValidators.length }}
+                />
+              </li>
+            ) : null}
+          </SimpleList>
         </Alert>
       ) : null}
       <ValidatorSearchInput id="nominate-search-bar" search={search} onSearch={onSearch} />
