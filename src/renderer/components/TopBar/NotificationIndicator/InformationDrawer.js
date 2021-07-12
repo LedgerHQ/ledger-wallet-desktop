@@ -23,6 +23,7 @@ const PanelContainer = styled.div`
   flex-direction: column;
   flex: 1;
   overflow-y: hidden;
+  padding-bottom: 60px;
 
   &.information-panel-switch-appear {
     opacity: 0;
@@ -80,7 +81,7 @@ export const InformationDrawer = ({
 
   return (
     <SideDrawer isOpen={isOpen} onRequestClose={onRequestClose} direction="left">
-      <Box pt="60px" height="100%" px="40px">
+      <Box height="100%" px="40px">
         <TabBar
           fullWidth
           tabs={tabs.map(({ label }) => label)}
