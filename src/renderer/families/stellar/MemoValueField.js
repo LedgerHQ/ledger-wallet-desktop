@@ -37,6 +37,7 @@ const MemoValueField = ({
       error={status.errors.transaction}
       value={transaction.memoValue}
       onChange={onMemoValueChange}
+      spellCheck="false"
     />
   );
 };
