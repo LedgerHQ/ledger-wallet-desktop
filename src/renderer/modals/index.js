@@ -9,7 +9,6 @@ import MODAL_PASSWORD from "./PasswordModal";
 import MODAL_DISABLE_PASSWORD from "./DisablePasswordModal";
 import MODAL_ADD_ACCOUNTS from "./AddAccounts";
 import MODAL_RECEIVE from "./Receive";
-import MODAL_TERMS from "./Terms";
 import MODAL_SEND from "./Send";
 import MODAL_SIGN_MESSAGE from "./SignMessage";
 import MODAL_SIGN_TRANSACTION from "./SignTransaction";
@@ -72,7 +71,6 @@ const modals: { [_: string]: React$ComponentType<any> } = {
   MODAL_DISABLE_PASSWORD,
   MODAL_ADD_ACCOUNTS,
   MODAL_RECEIVE,
-  MODAL_TERMS,
   MODAL_WALLETCONNECT_PASTE_LINK,
   MODAL_SEND,
   MODAL_SIGN_MESSAGE,

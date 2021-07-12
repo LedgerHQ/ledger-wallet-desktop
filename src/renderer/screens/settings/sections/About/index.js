@@ -6,12 +6,12 @@ import TrackPage from "~/renderer/analytics/TrackPage";
 import { SettingsSectionBody as Body, SettingsSectionRow as Row } from "../../SettingsSection";
 import RowItem from "../../RowItem";
 import ReleaseNotesButton from "./ReleaseNotesButton";
-import TermsButton from "./TermsButton";
-import { usePrivacyUrl } from "~/renderer/terms";
+import { useDynamicUrl } from "~/renderer/terms";
 
 const SectionHelp = () => {
   const { t } = useTranslation();
-  const privacyPolicyUrl = usePrivacyUrl();
+  const privacyPolicyUrl = useDynamicUrl("privacyPolicy");
+  const termsUrl = useDynamicUrl("terms");
   const version = process.env.SPECTRON_RUN ? "0.0.0" : __APP_VERSION__;
 
   return (
@@ -22,9 +22,11 @@ const SectionHelp = () => {
           <ReleaseNotesButton />
         </Row>
 
-        <Row title={t("settings.help.terms")} desc={t("settings.help.termsDesc")}>
-          <TermsButton />
-        </Row>
+        <RowItem
+          title={t("settings.help.terms")}
+          desc={t("settings.help.termsDesc")}
+          url={termsUrl}
+        />
 
         <RowItem
           title={t("settings.help.privacy")}

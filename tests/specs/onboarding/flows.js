@@ -10,20 +10,17 @@ export const selection = device => {
 
     const elem = await $("#onboarding-get-started-button");
     await elem.click();
-    const terms = await $("#modal-confirm-button");
-    await terms.waitForDisplayed();
-    await app.client.pause(2000);
+    await app.client.pause(500);
     expect(await app.client.screenshot()).toMatchImageSnapshot({
       customSnapshotIdentifier: "onboarding-terms-" + device,
     });
   });
   it("accept terms", async () => {
-    const lossCB = await $("#modal-terms-privacy-policy");
-    const termCB = await $("#modal-terms-checkbox");
-    const cta = await $("#modal-confirm-button");
-    await lossCB.click();
-    await termCB.click();
-    await cta.click();
+    const termsCheck = await $("#onboarding-terms-check");
+    const termsSubmit = await $("#onboarding-terms-submit");
+
+    await termsCheck.click();
+    await termsSubmit.click();
     await app.client.pause(200);
     expect(await app.client.screenshot()).toMatchImageSnapshot({
       customSnapshotIdentifier: "onboarding-terms-accepted-" + device,

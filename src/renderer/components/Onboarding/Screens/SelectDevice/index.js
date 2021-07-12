@@ -7,7 +7,6 @@ import type { DeviceModelId } from "@ledgerhq/devices";
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 import Text from "~/renderer/components/Text";
 import Button from "~/renderer/components/Button";
-import CheckTermsAccepted from "~/renderer/components/CheckTermsAccepted";
 import { DeviceSelector } from "./DeviceSelector";
 
 const SelectDeviceContainer: ThemedComponent<*> = styled.div`
@@ -41,7 +40,6 @@ export function SelectDevice({ sendEvent }: Props) {
 
   return (
     <SelectDeviceContainer>
-      <CheckTermsAccepted />
       <TopRightContainer>
         <Button small onClick={() => sendEvent("PREV")}>
           Previous
