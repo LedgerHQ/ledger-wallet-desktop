@@ -1,17 +1,13 @@
 // @flow
 import React from "react";
+import ReactDOM from "react-dom";
 import styled from "styled-components";
 import type { ThemedComponent } from "@ui/styles/StyleProvider";
 import Button from "@ui/components/Button";
 import Cross from "@ui/icons/Cross";
 
-type Props = {
-  children: React$Node,
-  isOpen: boolean,
-  onClose?: () => void,
-  width?: number,
-  height?: number,
-};
+type ModalProps = { children: React$Node, onClose?: () => void, width?: number, height?: number };
+type ModalWrapperProps = ModalProps & { isOpen: boolean };
 
 const Container: ThemedComponent<*> = styled.div`
   position: relative;
@@ -55,18 +51,25 @@ const CloseButton: ThemedComponent<*> = styled(Button)`
   right: ${p => p.theme.space[3]}px;
 `;
 
-const Modal = ({ children, width, height, isOpen, onClose }: Props) => {
-  return (
-    <>
-      <Overlay />
-      <Wrapper width={width} height={height}>
-        <Container>
-          <CloseButton Icon={Cross} onClick={onClose} />
-          {children}
-        </Container>
-      </Wrapper>
-    </>
-  );
+const Modal = ({ children, width, height, onClose }: ModalProps) => (
+  <>
+    <Overlay />
+    <Wrapper width={width} height={height}>
+      <Container>
+        <CloseButton Icon={Cross} onClick={onClose} />
+        {children}
+      </Container>
+    </Wrapper>
+  </>
+);
+
+const ModalWrapper = ({ children, isOpen, ...modalProps }: ModalWrapperProps) => {
+  const $root = React.useMemo(() => document.querySelector("#ll-modal-root"), []);
+
+  if (isOpen === false) return null;
+  if ($root === null) throw new Error("modal root cannot be found");
+
+  return ReactDOM.createPortal(<Modal {...modalProps}>{children}</Modal>, $root);
 };
 
-export default Modal;
+export default ModalWrapper;
