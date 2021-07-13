@@ -17,6 +17,12 @@
         }
       }
     },
+    "app": {
+      "informations": {
+        "title": "Informations",
+        "website": "Website"
+      }
+    },
     "catalog": {
       "title": "Discover",
       "branch": {

@@ -20,8 +20,8 @@ import Shield from "../icons/Shield";
 import ExclamationCircle from "../icons/ExclamationCircle";
 import CrossCircle from "../icons/CrossCircle";
 import LightBulb from "../icons/LightBulb";
-import ExternalLinkIcon from "../icons/ExternalLink";
 import Twitter from "../icons/Twitter";
+import ExternalLink from "./ExternalLink";
 
 const getIcon = (type: AlertType) => {
   switch (type) {
@@ -198,27 +198,6 @@ const CloseContainer = styled(Box)`
   }
 `;
 
-const ExternalLink = styled(Box).attrs(p => ({
-  cursor: "pointer",
-  horizontal: true,
-}))`
-  align-items: center;
-  display: inline-flex;
-  text-decoration: underline;
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &:active {
-    opacity: 1;
-  }
-`;
-
-const ExternalLinkIconContainer = styled.span`
-  display: inline-flex;
-  margin-left: 4px;
-`;
-
 type AlertType =
   | "primary"
   | "secondary"
@@ -283,14 +262,7 @@ export default function Alert({
 
   const learnMore = hasLearnMore && (
     <Text ff="Inter|SemiBold">
-      <ExternalLink onClick={handleLearnMore}>
-        {label}
-        {!learnMoreIsInternal && (
-          <ExternalLinkIconContainer>
-            <ExternalLinkIcon size={13} />
-          </ExternalLinkIconContainer>
-        )}
-      </ExternalLink>
+      <ExternalLink label={label} isInternal={learnMoreIsInternal} onClick={handleLearnMore} />
     </Text>
   );
 
