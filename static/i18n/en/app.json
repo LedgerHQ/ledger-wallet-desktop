@@ -2867,7 +2867,133 @@
     }
   },
   "connectTroubleshooting": {
-    "desc": "Having a hard time connecting your device?"
+    "desc": "Having a hard time connecting your device?",
+    "solution": "Solution #{{number}}",
+    "nextSolution": "Next solution",
+    "previousSolution": "Previous solution",
+    "followSteps": "Follow these steps",
+    "supportArticle": "Support article",
+    "steps": {
+      "entry": {
+        "title": "Troubleshoot USB connection",
+        "desc": "There seems to be a problem connecting to your device. Don’t worry, you can try different solutions one by one until your device connects!",
+        "cta": "Lets fix it!",
+        "back": "Go back"
+      },
+      "1": {
+        "windows": {
+          "title": "Run Ledger Live as Administrator",
+          "bullets": {
+            "0": "Quit Ledger Live.",
+            "1": "Right-click the Ledger Live application.",
+            "2": "Select “Run as Administrator”.",
+            "3": "Connect and unlock your device to see if it’s detected."
+          }
+        },
+        "linux": {
+          "title": "Update the udev rules on Linux",
+          "desc": "Click the button below to add the udev rules. Then connect and unlock your device to see if it’s detected.",
+          "cta": "Set Rules",
+          "bullets": {
+            "0": "Enter the following command in a terminal to automatically add the rules and reload udev",
+            "code": "wget -q -O - https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh | sudo bash",
+            "1": "Connect and unlock your device to see if it’s detected."
+          }
+        }
+      },
+      "2": {
+        "usbPort": {
+          "title": "Try different USB ports",
+          "bullets": {
+            "0": "Change the USB port used on your computer",
+            "1": "Remove any USB dongles",
+            "2": "Connect and unlock your device to see if it’s detected."
+          }
+        },
+        "usbCable": {
+          "title": "Change the USB cable",
+          "bullets": {
+            "0": "Use the original USB cable if possible.",
+            "1": "Try a different USB cable, making sure it supports data transfer.",
+            "2": "Connect and unlock your device to see if it’s detected."
+          }
+        },
+        "restart": {
+          "title": "Restart your computer",
+          "bullets": {
+            "0": "Restart your computer.",
+            "1": "Start Ledger Live.",
+            "2": "Connect and unlock your device to see if it’s detected."
+          }
+        },
+        "antiVirus": {
+          "title": "Turn off Anti-virus and VPN",
+          "bullets": {
+            "0": "Turn off any anti-virus, firewall, and VPN software.",
+            "1": "Connect and unlock your device to see if it’s detected.",
+            "2": "Whitelist Ledger Live in your anti-virus if that worked."
+          }
+        },
+        "anotherComputer": {
+          "title": "Try another computer",
+          "bullets": {
+            "0": "Go to <0>{{link}}</0> on another computer to download and install Ledger Live.",
+            "1": "Connect and unlock your device to see if it’s detected."
+          }
+        }
+      },
+      "3": {
+        "windows": {
+          "title": "Update the USB device drivers",
+          "bullets": {
+            "0": "Visit this <0>{{link}}</0>",
+            "1": "Follow the instructions to update USB device drivers.",
+            "2": "Connect and unlock your device to see if it's detected."
+          }
+        },
+        "mac": {
+          "0": {
+            "title": "Enable Full Disk Access",
+            "bullets": {
+              "0": "Open “System Preferences”.",
+              "1": "Go to “Security & Privacy”.",
+              "2": "In the “Privacy” tab, go to “Full Disk Access” in the left column.",
+              "3": "Add “Ledger Live”.",
+              "4": "Connect and unlock your device to see if it’s detected."
+            }
+          },
+          "1": {
+            "title": "Reset NVRAM",
+            "link": "Apple’s instructions",
+            "bullets": {
+              "0": "If your Mac has an intel processor, follow <0>{{link}}</0> to reset the NVRAM.",
+              "1": "Connect and unlock your device to see if it’s detected."
+            }
+          }
+        }
+      },
+      "4": {
+        "deviceSelection": {
+          "title": "What’s your device?",
+          "desc": "If you have a Nano S, you can try repairing your devices Firmware. For Nano X and Blue users, kindly contact Ledger support"
+        },
+        "notFixed": {
+          "title": " USB connection problem still not fixed?",
+          "desc": "If you've tried every possible solution, please reach out to Ledger Support. Otherwise, please follow the instructions of any solution you haven’t tried yet.",
+          "back": "Back to portfolio",
+          "cta": "Contact Support"
+        },
+        "repair": {
+          "title": "Repair your Nano S",
+          "desc": "What is the message displayed on your device?",
+          "mcuOutdated": "MCU firmware is outdated",
+          "mcuNotGenuine": "MCU firmware is not genuine",
+          "repairInstructions": "Follow device repair instructions",
+          "updateInstructions": "Follow device update instructions",
+          "somethingElse": "Something else"
+        }
+      }
+    }
   },
   "SignMessageConfirm": {
     "stringHash": "Message Hash",
