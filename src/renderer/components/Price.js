@@ -14,6 +14,8 @@ import Box from "~/renderer/components/Box";
 import CurrencyUnitValue from "~/renderer/components/CurrencyUnitValue";
 import IconActivity from "~/renderer/icons/Activity";
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
+import { Trans } from "react-i18next";
+import ToolTip from "./Tooltip";
 
 type Props = {
   unit?: Unit,
@@ -78,7 +80,14 @@ export default function Price({
     [bgColor, color, from, withActivityColor, withActivityCurrencyColor],
   );
 
-  if (!counterValue || counterValue.isZero()) return placeholder || null;
+  if (!counterValue || counterValue.isZero())
+    return (
+      <div style={{ maxHeight: 16 }}>
+        <ToolTip content={<Trans i18nKey="errors.countervaluesUnavailable.title" />}>
+          {placeholder || "-"}
+        </ToolTip>
+      </div>
+    );
 
   const subMagnitude = counterValue.lt(1) || showAllDigits ? 1 : 0;
 

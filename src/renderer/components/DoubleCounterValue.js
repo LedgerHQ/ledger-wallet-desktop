@@ -93,7 +93,13 @@ function DoubleCounterValue({
   });
 
   if (typeof countervalue === "undefined") {
-    return placeholder || null;
+    return (
+      <div style={{ maxHeight: 16 }}>
+        <ToolTip content={<Trans i18nKey="errors.countervaluesUnavailable.title" />}>
+          {placeholder || "-"}
+        </ToolTip>
+      </div>
+    );
   }
 
   const val = BigNumber(countervalue ?? 0);

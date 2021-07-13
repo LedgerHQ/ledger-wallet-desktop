@@ -6,6 +6,8 @@ import type { Currency } from "@ledgerhq/live-common/lib/types";
 import { useCalculate } from "@ledgerhq/live-common/lib/countervalues/react";
 import { counterValueCurrencySelector } from "~/renderer/reducers/settings";
 import FormattedVal from "~/renderer/components/FormattedVal";
+import ToolTip from "./Tooltip";
+import { Trans } from "react-i18next";
 
 type Props = {
   // wich market to query
@@ -47,7 +49,13 @@ export default function CounterValue({
   });
 
   if (typeof countervalue !== "number") {
-    return placeholder || null;
+    return (
+      <div style={{ maxHeight: 16 }}>
+        <ToolTip content={<Trans i18nKey="errors.countervaluesUnavailable.title" />}>
+          {placeholder || "-"}
+        </ToolTip>
+      </div>
+    );
   }
 
   return (
