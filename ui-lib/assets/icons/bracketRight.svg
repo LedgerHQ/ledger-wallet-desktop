@@ -1,0 +1,15 @@
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   viewBox="0 0 64 128"
+   fill="currentColor"
+   id="svgLogoBracketRight"
+>
+  <g>
+    <path
+       d="m 8.692,119.94 v 8.058 H 64 V 91.6548 H 55.941 V 119.94 Z"
+       id="pathBottomRight" />
+    <path
+       d="M 8.692,0 V 8.05844 H 55.941 V 36.3452 H 64 V 0 Z"
+       id="pathTopRight" />
+  </g>
+</svg>

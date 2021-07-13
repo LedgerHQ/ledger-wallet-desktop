@@ -68,15 +68,19 @@ module.exports = {
         },
       },
       {
-        type: 'javascript/auto',
+        type: "javascript/auto",
         test: /\.mjs$/,
-        use: []
-      }
+        use: [],
+      },
     ],
   },
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "src"),
+      "@ui": path.resolve(__dirname, "ui-lib"),
+      "@components": process.env.REBRANDING
+        ? path.resolve(__dirname, "ui-lib", "components")
+        : path.resolve(__dirname, "src", "renderer", "components"),
     },
   },
 };

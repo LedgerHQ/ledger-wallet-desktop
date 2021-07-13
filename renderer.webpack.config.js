@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const babelPlugins = require("./babel.plugins");
 const UnusedWebpackPlugin = require("unused-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 const babelConfig = {
   presets: [
@@ -28,6 +29,8 @@ const babelConfig = {
     ],
   ],
 };
+
+console.log("REBRANDING", process.env.REBRANDING);
 
 module.exports = {
   target: "electron-renderer",
@@ -58,6 +61,9 @@ module.exports = {
         "types.js",
       ],
     }),
+    new CopyPlugin({
+      patterns: [{ from: path.join(__dirname, "ui-lib/assets"), to: "assets" }],
+    }),
   ],
   module: {
     rules: [
@@ -86,15 +92,19 @@ module.exports = {
         },
       },
       {
-        type: 'javascript/auto',
+        type: "javascript/auto",
         test: /\.mjs$/,
-        use: []
-      }
+        use: [],
+      },
     ],
   },
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "src"),
+      "@ui": path.resolve(__dirname, "ui-lib"),
+      "@components": process.env.REBRANDING
+        ? path.resolve(__dirname, "ui-lib", "components")
+        : path.resolve(__dirname, "src", "renderer", "components"),
     },
   },
 };
