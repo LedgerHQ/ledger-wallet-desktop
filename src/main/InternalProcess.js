@@ -87,22 +87,44 @@ class InternalProcess {
       this.run();
     }
 
-    this.process.stdout.on("data", data =>
-      String(data)
+    this.process.stdout.on("data", data => {
+      let count = 0;
+      let acc = "";
+      const str = data
+        .toString()
         .split("\n")
-        .forEach(msg => {
-          if (!msg) return;
-          if (process.env.INTERNAL_LOGS) console.log(msg);
-          try {
-            const obj = JSON.parse(msg);
-            if (obj && obj.type === "log") {
-              logger.onLog(obj.log);
-              return;
+        .join("");
+      const lastIndex = 0;
+      for (let i = 0; i < str.length; i++) {
+        switch (str[i]) {
+          case "[":
+          case "{":
+            count++;
+            break;
+          case "]":
+          case "}":
+            count--;
+            if (count === 0) {
+              acc += str.slice(lastIndex, i + 1);
+              if (process.env.INTERNAL_LOGS) console.log(acc);
+              try {
+                const obj = JSON.parse(acc);
+                if (obj && obj.type === "log") {
+                  logger.onLog(obj.log);
+                  return;
+                }
+                logger.debug("I: " + acc);
+                acc = "";
+              } catch (error) {
+                if (process.env.INTERNAL_LOGS) console.error(error);
+              }
             }
-          } catch (e) {}
-          logger.debug("I: " + msg);
-        }),
-    );
+            break;
+          default:
+        }
+      }
+      acc += str.slice(lastIndex);
+    });
     this.process.stderr.on("data", data => {
       const msg = String(data).trim();
       if (__DEV__) console.error("I.e: " + msg);
