@@ -76,6 +76,15 @@ const SatStack = ({ satStackDownloaded }: { satStackDownloaded: boolean }) => {
       >
         <Trans i18nKey={`fullNode.modal.steps.satstack.connectionSteps.${type}.description`} />
       </Text>
+      {type !== "ready" ? (
+        <Box mt={3}>
+          <InfoBox type="secondary" onLearnMore={onLearnMore}>
+            <Text ff="Inter|Regular" fontSize={3} color="palette.text.shade50">
+              <Trans i18nKey="fullNode.modal.steps.satstack.connectionSteps.notConnected.disclaimer" />
+            </Text>
+          </InfoBox>
+        </Box>
+      ) : null}
     </Box>
   );
 };
