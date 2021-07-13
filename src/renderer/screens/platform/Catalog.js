@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { getEnv } from "@ledgerhq/live-common/lib/env";
-import { useCatalog } from "@ledgerhq/live-common/lib/platform/CatalogProvider";
+import { usePlatformApp } from "@ledgerhq/live-common/lib/platform/PlatformAppProvider";
 
 import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 
@@ -23,6 +23,7 @@ import AppCard from "~/renderer/components/Platform/AppCard";
 import CatalogCTA from "./CatalogCTA";
 import CatalogBanner from "./CatalogBanner";
 import TwitterBanner from "./TwitterBanner";
+import { filterPlatformApps } from "@ledgerhq/live-common/lib/platform/PlatformAppProvider/helpers";
 
 const Grid = styled.div`
   display: grid;
@@ -61,8 +62,11 @@ const DeveloperText = styled(Text).attrs(p => ({ color: p.theme.colors.palette.t
 
 const PlatformCatalog = () => {
   const history = useHistory();
-  const appBranches = useMemo(() => {
-    const branches = ["stable", "soon", "experimental"];
+
+  const { manifests } = usePlatformApp();
+
+  const filteredManifests = useMemo(() => {
+    const branches = ["stable", "soon"];
 
     // TODO: add experimental setting
 
@@ -70,10 +74,8 @@ const PlatformCatalog = () => {
       branches.push("debug");
     }
 
-    return branches;
-  }, []);
-
-  const { apps } = useCatalog("desktop", appBranches);
+    return filterPlatformApps(manifests, { branches, version: "0.0.1" });
+  }, [manifests]);
 
   const { t } = useTranslation();
 
@@ -96,8 +98,8 @@ const PlatformCatalog = () => {
       </Header>
       <CatalogBanner />
       <TwitterBanner />
-      <Grid length={apps.length}>
-        {apps.map(manifest => (
+      <Grid length={manifests.length}>
+        {filteredManifests.map(manifest => (
           <GridItem key={manifest.id}>
             <AppCard
               id={`platform-catalog-app-${manifest.id}`}

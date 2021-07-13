@@ -23,7 +23,7 @@ import Default from "./Default";
 import WalletConnectProvider from "./screens/WalletConnect/Provider";
 import { AnnouncementProviderWrapper } from "~/renderer/components/AnnouncementProviderWrapper";
 import { ToastProvider } from "@ledgerhq/live-common/lib/notifications/ToastProvider";
-import PlatformCatalogProvider from "@ledgerhq/live-common/lib/platform/CatalogProvider";
+import { PlatformAppProvider } from "@ledgerhq/live-common/lib/platform/PlatformAppProvider";
 
 const reloadApp = event => {
   if ((event.ctrlKey || event.metaKey) && event.key === "r") {
@@ -35,6 +35,32 @@ type Props = {
   store: Store<State, *>,
   initialCountervalues: *,
 };
+
+const lido = {
+  id: "lido",
+  name: "Lido",
+  url:
+    "https://ledger-live-platform-apps.vercel.app/app/dapp-browser?dappName=Lido&nanoApp=Lido&url=https%3A%2F%2Fledger-hq-test.vercel.app%2F",
+  homepageUrl: "https://lido.fi/",
+  icon: "https://cdn.live.ledger.com/icons/platform/lido.png",
+  platform: "all",
+  apiVersion: "0.0.1",
+  manifestVersion: "1",
+  branch: "stable",
+  categories: ["staking", "defi"],
+  currencies: ["ethereum"],
+  content: {
+    shortDescription: {
+      en: "Stake any amount of Eth to Eth2 and earn daily staking rewards.",
+    },
+    description: {
+      en: "Stake any amount of Eth to Eth2 and earn daily staking rewards.",
+    },
+  },
+  permissions: [],
+  domains: [],
+}
+
 
 const App = ({ store, initialCountervalues }: Props) => {
   const [reloadEnabled, setReloadEnabled] = useState(true);
@@ -68,11 +94,11 @@ const App = ({ store, initialCountervalues }: Props) => {
                     <AnnouncementProviderWrapper>
                       <Router>
                         <WalletConnectProvider>
-                          <PlatformCatalogProvider>
+                          <PlatformAppProvider extraManifests={[lido]}>
                             <DrawerProvider>
                               <Default />
                             </DrawerProvider>
-                          </PlatformCatalogProvider>
+                          </PlatformAppProvider>
                         </WalletConnectProvider>
                       </Router>
                     </AnnouncementProviderWrapper>

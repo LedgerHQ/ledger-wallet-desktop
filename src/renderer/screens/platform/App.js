@@ -1,7 +1,7 @@
 // @flow
 import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { useAppManifest } from "@ledgerhq/live-common/lib/platform/CatalogProvider";
+import { usePlatformApp } from "@ledgerhq/live-common/lib/platform/PlatformAppProvider";
 
 import TrackPage from "~/renderer/analytics/TrackPage";
 import { Card } from "~/renderer/components/Box";
@@ -21,7 +21,8 @@ type Props = {
 export default function PlatformApp({ match }: Props) {
   const history = useHistory();
   const { appId } = match.params;
-  const manifest = useAppManifest(appId);
+  const { manifestById } = usePlatformApp();
+  const manifest = manifestById[appId];
 
   const handleClose = useCallback(() => history.push(`/platform`), [history]);
 
