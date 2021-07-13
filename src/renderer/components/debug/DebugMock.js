@@ -268,6 +268,14 @@ const DebugMock = () => {
   const [notifLanguages, setNotifLanguages] = useState("");
   const [notifExtra, setNotifExtra] = useState("");
 
+  const [notifPlatform, setNotifPlatform] = useState("");
+  const [notifCurrencies, setNotifCurrencies] = useState("");
+  const [notifDeviceVersion, setNotifDeviceVersion] = useState("");
+  const [notifDeviceModelId, setNotifDeviceModelId] = useState("");
+  const [notifDeviceApps, setNotifDeviceApps] = useState("");
+  const [notifLanguages, setNotifLanguages] = useState("");
+  const [notifExtra, setNotifExtra] = useState("");
+
   const { updateCache } = useAnnouncements();
   const { updateData } = useServiceStatus();
 

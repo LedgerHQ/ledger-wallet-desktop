@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from "react";
 import { AnnouncementProvider } from "@ledgerhq/live-common/lib/notifications/AnnouncementProvider";
 import type { Announcement } from "@ledgerhq/live-common/lib/notifications/AnnouncementProvider/types";
 import { getKey, setKey } from "~/renderer/storage";
-import { languageSelector } from "~/renderer/reducers/settings";
+import { languageSelector, lastSeenDeviceSelector } from "~/renderer/reducers/settings";
 import { currenciesIdSelector } from "~/renderer/reducers/accounts";
 import { useSelector, useDispatch } from "react-redux";
 import { ServiceStatusProvider } from "@ledgerhq/live-common/lib/notifications/ServiceStatusProvider";
@@ -58,6 +58,7 @@ export function AnnouncementProviderWrapper({ children }: Props) {
   const startDate = useMemo(() => new Date(), []);
   const language = useSelector(languageSelector);
   const currencies = useSelector(currenciesIdSelector);
+  const lastSeenDevice = useSelector(lastSeenDeviceSelector);
   const dispatch = useDispatch();
 
   // $FlowFixMe please help on fixing this. bad type on live-common?
@@ -67,6 +68,8 @@ export function AnnouncementProviderWrapper({ children }: Props) {
     language,
     currencies,
     getDate: () => new Date(),
+    lastSeenDevice: lastSeenDevice || undefined,
+    platform: process.platform,
   };
 
   const onNewAnnouncement = useCallback(
