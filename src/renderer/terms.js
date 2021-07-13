@@ -6,11 +6,17 @@ import { useSelector } from "react-redux";
 import { languageSelector } from "~/renderer/reducers/settings";
 import { urls } from "~/config/urls";
 
-const getRawLanguageURL = (language: string) =>
-  `https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERM.${language}.md`;
 const rawDefaultURL =
   "https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERMS.md";
+
 export const url = "https://github.com/LedgerHQ/ledger-live-desktop/blob/master/TERMS.md";
+
+const termsUrlLocalized = {
+  en: "https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERMS.md",
+  fr: "https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERM.fr.md",
+  es: "https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERM.es.md",
+  ru: "https://raw.githubusercontent.com/LedgerHQ/ledger-live-desktop/master/TERM.ru.md",
+};
 
 const currentTermsRequired = "2019-12-04";
 const currentLendingTermsRequired = "2020-11-10";
@@ -33,7 +39,8 @@ export function acceptLendingTerms() {
 
 export async function load(language: string) {
   try {
-    const { data } = await network({ url: getRawLanguageURL(language) });
+    const url = termsUrlLocalized[language] || termsUrlLocalized.en;
+    const { data } = await network({ url });
     return data;
   } catch (error) {
     if (error.status === 404) {
