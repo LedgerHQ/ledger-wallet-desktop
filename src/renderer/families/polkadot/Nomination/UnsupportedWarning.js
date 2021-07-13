@@ -5,8 +5,10 @@ import { Trans } from "react-i18next";
 
 import { urls } from "~/config/urls";
 import { darken, lighten } from "~/renderer/styles/helpers";
-
 import Alert from "~/renderer/components/Alert";
+import Button from "~/renderer/components/Button";
+import Box from "~/renderer/components/Box";
+import SetControllerIcon from "~/renderer/icons/Manager";
 
 const Address = styled.span.attrs(() => ({
   color: "wallet",
@@ -23,32 +25,47 @@ const Address = styled.span.attrs(() => ({
 `;
 
 export const ExternalControllerUnsupportedWarning = ({
-  address,
+  controllerAddress,
   onExternalLink,
+  onSetController,
 }: {
-  address: ?string,
+  controllerAddress: ?string,
   onExternalLink: Function,
+  onSetController: Function,
 }) => (
-  <Alert
-    type="help"
-    learnMoreUrl={urls.stakingPolkadot}
-    learnMoreLabel={<Trans i18nKey="polkadot.nomination.emptyState.info" />}
-    style={{ border: "none", margin: 0 }}
-  >
-    <Trans i18nKey="polkadot.nomination.externalControllerUnsupported" values={{ address }}>
-      <p>
-        <Address onClick={() => onExternalLink(address)} />
-      </p>
-      <p />
-    </Trans>
-  </Alert>
+  <Box horizontal flow={1} alignItems="center" justifyContent="space-between">
+    <Alert
+      type="help"
+      learnMoreUrl={urls.stakingPolkadot}
+      learnMoreLabel={<Trans i18nKey="polkadot.nomination.emptyState.info" />}
+      style={{ border: "none", margin: 0 }}
+    >
+      <Trans
+        i18nKey="polkadot.nomination.externalControllerUnsupported"
+        values={{ controllerAddress }}
+      >
+        <p>
+          <Address onClick={() => onExternalLink(controllerAddress)} />
+        </p>
+        <p />
+      </Trans>
+    </Alert>
+    <Button id={"account-set-controller-button"} primary small mr={3} onClick={onSetController}>
+      <Box horizontal flow={1} alignItems="center">
+        <SetControllerIcon size={12} />
+        <Box>
+          <Trans i18nKey="polkadot.nomination.setController" />
+        </Box>
+      </Box>
+    </Button>
+  </Box>
 );
 
 export const ExternalStashUnsupportedWarning = ({
-  address,
+  stashAddress,
   onExternalLink,
 }: {
-  address: ?string,
+  stashAddress: ?string,
   onExternalLink: Function,
 }) => (
   <Alert
@@ -57,9 +74,9 @@ export const ExternalStashUnsupportedWarning = ({
     learnMoreLabel={<Trans i18nKey="polkadot.nomination.emptyState.info" />}
     style={{ border: "none", margin: 0 }}
   >
-    <Trans i18nKey="polkadot.nomination.externalStashUnsupported" values={{ address }}>
+    <Trans i18nKey="polkadot.nomination.externalStashUnsupported" values={{ stashAddress }}>
       <p>
-        <Address onClick={() => onExternalLink(address)} />
+        <Address onClick={() => onExternalLink(stashAddress)} />
       </p>
       <p />
     </Trans>

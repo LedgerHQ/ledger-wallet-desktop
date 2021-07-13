@@ -127,6 +127,15 @@ const Nomination = ({ account }: Props) => {
     );
   }, [account, dispatch]);
 
+  const onSetController = useCallback(() => {
+    dispatch(
+      openModal("MODAL_POLKADOT_SIMPLE_OPERATION", {
+        mode: "setController",
+        account,
+      }),
+    );
+  }, [account, dispatch]);
+
   const onWithdrawUnbonded = useCallback(() => {
     dispatch(
       openModal("MODAL_POLKADOT_SIMPLE_OPERATION", {
@@ -226,8 +235,9 @@ const Nomination = ({ account }: Props) => {
           titleProps={{ "data-e2e": "title_Nomination" }}
         />
         <ExternalControllerUnsupportedWarning
-          address={polkadotResources?.controller}
+          controllerAddress={polkadotResources?.controller}
           onExternalLink={onExternalLink}
+          onSetController={onSetController}
         />
       </TableContainer>
     );
@@ -241,7 +251,7 @@ const Nomination = ({ account }: Props) => {
           titleProps={{ "data-e2e": "title_Nomination" }}
         />
         <ExternalStashUnsupportedWarning
-          address={polkadotResources?.stash}
+          stashAddress={polkadotResources?.stash}
           onExternalLink={onExternalLink}
         />
       </TableContainer>
