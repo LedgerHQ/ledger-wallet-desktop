@@ -18,6 +18,8 @@ flow-defs
 module.system.node.resolve_dirname=./src
 module.system.node.resolve_dirname=node_modules
 module.name_mapper='^~' ->'<PROJECT_ROOT>/src'
+module.name_mapper='^@ui' ->'<PROJECT_ROOT>/ui-lib'
+module.name_mapper='^@components' ->'<PROJECT_ROOT>/src/renderer/components'
 munge_underscores=true
 esproposal.optional_chaining=enable
 

@@ -1,10 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
   <head>
     <meta charset="utf-8" />
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <script async src="https://resources.live.ledger.app/public_resources/analytics.min.js"></script>
+    <script
+      async
+      src="https://resources.live.ledger.app/public_resources/analytics.min.js"
+    ></script>
     <style>
       html {
         overflow: hidden;
@@ -85,6 +87,7 @@
 
   <body>
     <div id="react-root"></div>
+    <div id="ll-modal-root"></div>
     <div id="loader-container">
       <div id="loader">
         <img id="loading-logo" />
@@ -92,5 +95,4 @@
     </div>
     <div id="modals"></div>
   </body>
-  
 </html>
