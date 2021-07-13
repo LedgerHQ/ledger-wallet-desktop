@@ -30,6 +30,7 @@ type Props = {
   closeModal: string => void,
   replaceAccounts: (Account[]) => void,
   blacklistedTokenIds?: string[],
+  skipChooseCurrencyStep?: ?boolean,
 };
 
 type StepId = "chooseCurrency" | "connectDevice" | "import" | "finish";
@@ -59,12 +60,15 @@ export type StepProps = {
 
 type St = Step<StepId, StepProps>;
 
-const createSteps = (): St[] => {
-  const onBack = ({ transitionTo, resetScanState }: StepProps) => {
-    resetScanState();
-    transitionTo("chooseCurrency");
-  };
-  return [
+const createSteps = (skipChooseCurrencyStep): St[] => {
+  // the back button is not needed when we skip "chooseCurrency" step because the back button brings user to "chooseCurrency" step
+  const onBack = skipChooseCurrencyStep
+    ? null
+    : ({ transitionTo, resetScanState }: StepProps) => {
+        resetScanState();
+        transitionTo("chooseCurrency");
+      };
+  const steps = [
     {
       id: "chooseCurrency",
       label: <Trans i18nKey="addAccounts.breadcrumb.informations" />,
@@ -98,6 +102,10 @@ const createSteps = (): St[] => {
       hideFooter: true,
     },
   ];
+  if (skipChooseCurrencyStep) {
+    steps.shift();
+  }
+  return steps;
 };
 
 type State = {
@@ -135,7 +143,7 @@ const INITIAL_STATE = {
 
 class AddAccounts extends PureComponent<Props, State> {
   state = INITIAL_STATE;
-  STEPS = createSteps();
+  STEPS = createSteps(false);
 
   handleClickAdd = async () => {
     const { replaceAccounts, existingAccounts } = this.props;
@@ -193,11 +201,14 @@ class AddAccounts extends PureComponent<Props, State> {
 
   handleBeforeOpen = ({ data }) => {
     const { currency } = this.state;
-
+    if (this.props.skipChooseCurrencyStep) {
+      this.STEPS = createSteps(true);
+    }
     if (!currency) {
       if (data && data.currency) {
         this.setState({
           currency: data.currency,
+          skipChooseCurrencyStep: this.props.skipChooseCurrencyStep,
         });
       }
     }
@@ -210,7 +221,6 @@ class AddAccounts extends PureComponent<Props, State> {
   render() {
     const { device, existingAccounts, blacklistedTokenIds } = this.props;
     const {
-      stepId,
       currency,
       scannedAccounts,
       checkedAccountsIds,
@@ -219,7 +229,7 @@ class AddAccounts extends PureComponent<Props, State> {
       editedNames,
       reset,
     } = this.state;
-
+    let { stepId } = this.state;
     const stepperProps = {
       currency,
       device,
@@ -242,6 +252,10 @@ class AddAccounts extends PureComponent<Props, State> {
     const title = <Trans i18nKey="addAccounts.title" />;
 
     const errorSteps = err ? [2] : [];
+
+    if (stepId === "chooseCurrency" && this.props.skipChooseCurrencyStep) {
+      stepId = "connectDevice";
+    }
 
     return (
       <Modal

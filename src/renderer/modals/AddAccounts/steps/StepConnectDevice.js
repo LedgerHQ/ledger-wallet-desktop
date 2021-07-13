@@ -1,6 +1,5 @@
 // @flow
 
-import invariant from "invariant";
 import React, { useEffect } from "react";
 import { prepareCurrency } from "~/renderer/bridge/cache";
 import TrackPage from "~/renderer/analytics/TrackPage";
@@ -16,8 +15,6 @@ const connectAppExec = command("connectApp");
 const action = createAction(getEnv("MOCK") ? mockedEventEmitter : connectAppExec);
 
 const StepConnectDevice = ({ currency, device, transitionTo }: StepProps) => {
-  invariant(currency, "No crypto asset given");
-
   // preload currency ahead of time
   useEffect(() => {
     if (currency && currency.type === "CryptoCurrency") {
@@ -30,6 +27,9 @@ const StepConnectDevice = ({ currency, device, transitionTo }: StepProps) => {
       ? currency.parentCurrency.name
       : currency.name
     : undefined;
+  if (!currency) {
+    return null;
+  }
 
   return (
     <>

@@ -112,11 +112,15 @@ const AppsList = ({
   }, [search]);
 
   const { installed: installedApps, uninstallQueue, apps } = state;
-
   const addAccount = useCallback(
     currency => {
       push("/accounts");
-      reduxDispatch(openModal("MODAL_ADD_ACCOUNTS", { currency: currency || null }));
+      reduxDispatch(
+        openModal("MODAL_ADD_ACCOUNTS", {
+          currency: currency || null,
+          skipChooseCurrencyStep: true,
+        }),
+      );
     },
     [push, reduxDispatch],
   );

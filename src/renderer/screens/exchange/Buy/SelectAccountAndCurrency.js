@@ -91,9 +91,8 @@ const SelectAccountAndCurrency = ({ selectAccount, defaultCurrency, defaultAccou
   } = useCurrencyAccountSelect({ allCurrencies, allAccounts, defaultCurrency, defaultAccount });
 
   const dispatch = useDispatch();
-
   const openAddAccounts = useCallback(() => {
-    dispatch(openModal("MODAL_ADD_ACCOUNTS", { currency }));
+    dispatch(openModal("MODAL_ADD_ACCOUNTS", { currency, skipChooseCurrencyStep: true }));
   }, [dispatch, currency]);
 
   return (
