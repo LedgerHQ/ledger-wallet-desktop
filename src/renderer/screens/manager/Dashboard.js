@@ -14,6 +14,7 @@ import { command } from "~/renderer/commands";
 import FirmwareUpdate from "./FirmwareUpdate";
 import { getCurrentDevice } from "~/renderer/reducers/devices";
 import { getEnv } from "@ledgerhq/live-common/lib/env";
+import { useLocation } from "react-router";
 
 type Props = {
   device: Device,
@@ -24,12 +25,16 @@ type Props = {
 };
 
 const Dashboard = ({ device, deviceInfo, result, onReset, appsToRestore }: Props) => {
+  const { search } = useLocation();
   const { t } = useTranslation();
   const currentDevice = useSelector(getCurrentDevice);
   const [firmwareUpdateOpened, setFirmwareUpdateOpened] = useState(false);
   const hasDisconnectedDuringFU = useRef(false);
   const [firmware, setFirmware] = useState(null);
   const [firmwareError, setFirmwareError] = useState(null);
+
+  const params = new URLSearchParams(search || "");
+  const openFirmwareUpdate = params.get("firmwareUpdate") === "true";
 
   useEffect(() => {
     command("getLatestFirmwareForDevice")(deviceInfo)
@@ -99,6 +104,7 @@ const Dashboard = ({ device, deviceInfo, result, onReset, appsToRestore }: Props
               disableFirmwareUpdate={disableFirmwareUpdate}
               installed={installed}
               onReset={onReset}
+              openFirmwareUpdate={openFirmwareUpdate}
             />
           )}
         />
@@ -111,6 +117,7 @@ const Dashboard = ({ device, deviceInfo, result, onReset, appsToRestore }: Props
           error={firmwareError}
           setFirmwareUpdateOpened={setFirmwareUpdateOpened}
           onReset={onReset}
+          openFirmwareUpdate={openFirmwareUpdate}
         />
       )}
     </Box>

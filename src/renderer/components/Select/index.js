@@ -43,6 +43,7 @@ type Props = {
   autoFocus: boolean,
   virtual: boolean,
   rowHeight: number,
+  error: ?Error, // NB at least a different rendering for now
 };
 
 const Row = styled.div`
@@ -192,6 +193,7 @@ class Select extends PureComponent<Props> {
       minWidth,
       small,
       theme,
+      error,
       virtual = true,
       rowHeight = small ? 34 : 40,
       ...props
@@ -217,7 +219,7 @@ class Select extends PureComponent<Props> {
                 ...createRenderers({ renderOption, renderValue }),
               }
         }
-        styles={createStyles(theme, { width, minWidth, small, isRight, isLeft })}
+        styles={createStyles(theme, { width, minWidth, small, isRight, isLeft, error })}
         placeholder={placeholder}
         isDisabled={isDisabled}
         isLoading={isLoading}

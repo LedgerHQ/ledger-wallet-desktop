@@ -15,7 +15,7 @@ import IconAccountSettings from "~/renderer/icons/AccountSettings";
 import ContextMenuItem from "./ContextMenuItem";
 import { toggleStarAction } from "~/renderer/actions/accounts";
 import { useRefreshAccountsOrdering } from "~/renderer/actions/general";
-import { flattenedSwapSupportedCurrenciesSelector } from "~/renderer/reducers/settings";
+import { swapSelectableCurrenciesSelector } from "~/renderer/reducers/settings";
 import { isCurrencySupported } from "~/renderer/screens/exchange/config";
 import { setTrackingSource } from "~/renderer/analytics/TrackPage";
 
@@ -37,7 +37,7 @@ export default function AccountContextMenu({
   const history = useHistory();
   const dispatch = useDispatch();
   const refreshAccountsOrdering = useRefreshAccountsOrdering();
-  const swapSupportedCurrencies = useSelector(flattenedSwapSupportedCurrenciesSelector);
+  const swapSelectableCurrencies = useSelector(swapSelectableCurrenciesSelector);
 
   const menuItems = useMemo(() => {
     const currency = getAccountCurrency(account);
@@ -93,7 +93,7 @@ export default function AccountContextMenu({
       });
     }
 
-    const availableOnSwap = swapSupportedCurrencies.includes(currency);
+    const availableOnSwap = swapSelectableCurrencies.includes(currency.id);
     if (availableOnSwap) {
       items.push({
         label: "accounts.contextMenu.swap",
@@ -150,7 +150,7 @@ export default function AccountContextMenu({
     withStar,
     dispatch,
     refreshAccountsOrdering,
-    swapSupportedCurrencies,
+    swapSelectableCurrencies,
   ]);
 
   const currency = getAccountCurrency(account);

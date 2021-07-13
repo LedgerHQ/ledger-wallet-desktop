@@ -20,6 +20,8 @@ type Input = {
   exchangeRate: ExchangeRateRaw,
   transaction: TransactionRaw,
   deviceId: string,
+  userId?: string,
+  requireLatestFirmware?: boolean,
 };
 
 const cmd = ({
@@ -27,6 +29,8 @@ const cmd = ({
   exchangeRate,
   transaction,
   deviceId,
+  userId,
+  requireLatestFirmware,
 }: Input): Observable<SwapRequestEvent> => {
   return from(
     initSwap({
@@ -34,6 +38,8 @@ const cmd = ({
       exchangeRate: fromExchangeRateRaw(exchangeRate),
       transaction: fromTransactionRaw(transaction),
       deviceId,
+      userId,
+      requireLatestFirmware,
     }),
   );
 };

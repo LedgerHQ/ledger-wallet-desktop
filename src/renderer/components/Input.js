@@ -131,6 +131,14 @@ const Base = styled.input.attrs(() => ({
   &::placeholder {
     color: ${p => p.theme.colors.palette.text.shade40};
   }
+
+  &[type="date"] {
+    ::-webkit-inner-spin-button,
+    ::-webkit-calendar-picker-indicator {
+      display: none;
+      -webkit-appearance: none;
+    }
+  }
 `;
 
 type Props = {

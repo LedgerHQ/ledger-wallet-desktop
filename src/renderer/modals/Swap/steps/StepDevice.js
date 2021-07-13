@@ -26,8 +26,9 @@ import {
   toExchangeRateRaw,
 } from "@ledgerhq/live-common/lib/exchange/swap/serialization";
 import { toTransactionRaw } from "@ledgerhq/live-common/lib/transaction";
-
+import { swapKYCSelector } from "~/renderer/reducers/settings";
 import { mockedEventEmitter } from "~/renderer/components/debug/DebugMock";
+
 const connectAppExec = command("connectApp");
 const initSwapExec = command("initSwap");
 
@@ -36,12 +37,13 @@ const action2 = initSwapCreateAction(
   getEnv("MOCK") ? mockedEventEmitter : connectAppExec,
   getEnv("MOCK")
     ? mockedEventEmitter
-    : ({ exchange, exchangeRate, transaction, deviceId }) =>
+    : ({ exchange, exchangeRate, transaction, deviceId, userId }) =>
         initSwapExec({
           exchange: toExchangeRaw(exchange),
           exchangeRate: toExchangeRateRaw(exchangeRate),
           transaction: toTransactionRaw(transaction),
           deviceId,
+          userId,
         }),
 );
 
@@ -79,6 +81,8 @@ const StepDevice = ({
   const deviceRef = useRef(device);
   const { exchange, exchangeRate } = swap;
   const { fromAccount: account, fromParentAccount: parentAccount } = exchange;
+  const swapKYC = useSelector(swapKYCSelector);
+  const providerKYC = swapKYC[swap.exchangeRate.provider];
 
   const broadcast = useBroadcast({ account, parentAccount });
   const [swapData, setSwapData] = useState(null);
@@ -114,8 +118,10 @@ const StepDevice = ({
       transaction,
       status,
       device: deviceRef,
+      userId: providerKYC?.id,
+      requireLatestFirmware: true,
     }),
-    [exchange, exchangeRate, transaction, status],
+    [exchange, exchangeRate, transaction, status, providerKYC],
   );
 
   return signedOperation ? (
@@ -145,6 +151,7 @@ const StepDevice = ({
         account,
         transaction: swapData.transaction,
         appName: "Exchange",
+        requireLatestFirmware: true,
       }}
       Result={Result}
       onResult={({ signedOperation, transactionSignError }) => {

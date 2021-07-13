@@ -34,6 +34,7 @@ type Props = {
   firmware: ?FirmwareUpdateContext,
   error: ?Error,
   isIncomplete?: boolean,
+  openFirmwareUpdate?: boolean,
 };
 
 type State = {
@@ -49,7 +50,7 @@ const initialStepId = ({ deviceInfo, device }): StepId =>
     : "idCheck";
 
 const initializeState = (props: Props): State => ({
-  modal: props.deviceInfo.isOSU ? "install" : "closed",
+  modal: props.deviceInfo.isOSU ? "install" : props.openFirmwareUpdate ? "disclaimer" : "closed",
   stepId: initialStepId(props),
 });
 

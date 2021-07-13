@@ -13,6 +13,7 @@ import type {
 } from "@ledgerhq/live-common/lib/types";
 import type { ExchangeRate, Exchange } from "@ledgerhq/live-common/lib/exchange/swap/types";
 import { WrongDeviceForAccount, UpdateYourApp } from "@ledgerhq/errors";
+import { LatestFirmwareVersionRequired } from "@ledgerhq/live-common/lib/errors";
 import type { DeviceModelId } from "@ledgerhq/devices";
 import type { Device } from "@ledgerhq/live-common/lib/hw/actions/types";
 import { getAccountUnit, getMainAccount } from "@ledgerhq/live-common/lib/account";
@@ -181,11 +182,13 @@ const OpenManagerBtn = ({
   closeAllModal,
   appName,
   updateApp,
+  firmwareUpdate,
   mt = 2,
 }: {
   closeAllModal: () => void,
   appName?: string,
   updateApp?: boolean,
+  firmwareUpdate?: boolean,
   mt?: number,
 }) => {
   const history = useHistory();
@@ -193,6 +196,7 @@ const OpenManagerBtn = ({
   const onClick = useCallback(() => {
     const urlParams = new URLSearchParams({
       updateApp: updateApp ? "true" : "false",
+      firmwareUpdate: firmwareUpdate ? "true" : "false",
       ...(appName ? { q: appName } : {}),
     });
     const search = urlParams.toString();
@@ -202,7 +206,7 @@ const OpenManagerBtn = ({
       search: search ? `?${search}` : "",
     });
     closeAllModal();
-  }, [updateApp, appName, history, closeAllModal]);
+  }, [updateApp, firmwareUpdate, appName, history, closeAllModal]);
 
   return (
     <Button mt={mt} primary onClick={onClick}>
@@ -381,6 +385,7 @@ export const renderError = ({
   supportLink,
   warning,
   managerAppName,
+  requireFirmwareUpdate,
 }: {
   error: Error,
   withOpenManager?: boolean,
@@ -390,6 +395,7 @@ export const renderError = ({
   supportLink?: string,
   warning?: boolean,
   managerAppName?: string,
+  requireFirmwareUpdate?: boolean,
 }) => (
   <Wrapper id={`error-${error.name}`}>
     <Logo warning={warning}>
@@ -409,8 +415,12 @@ export const renderError = ({
       </ErrorDescription>
     ) : null}
     <ButtonContainer>
-      {managerAppName ? (
-        <OpenManagerButton appName={managerAppName} updateApp={error instanceof UpdateYourApp} />
+      {managerAppName || requireFirmwareUpdate ? (
+        <OpenManagerButton
+          appName={managerAppName}
+          updateApp={error instanceof UpdateYourApp}
+          firmwareUpdate={error instanceof LatestFirmwareVersionRequired}
+        />
       ) : (
         <>
           {supportLink ? (

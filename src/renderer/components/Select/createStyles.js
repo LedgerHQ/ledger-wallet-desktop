@@ -10,12 +10,14 @@ export default (
     small,
     isRight,
     isLeft,
+    error,
   }: {
     width: number,
     minWidth: number,
     small: boolean,
     isRight: boolean,
     isLeft: boolean,
+    error: ?Error,
   },
 ) => ({
   control: (styles: Object, { isFocused }: Object) => ({
@@ -26,7 +28,7 @@ export default (
     height: small ? 34 : 48,
     minHeight: "unset",
     borderRadius: isRight ? "0 4px 4px 0" : isLeft ? "4px 0 0 4px" : 4,
-    borderColor: theme.colors.palette.divider,
+    borderColor: error ? theme.colors.pearl : theme.colors.palette.divider,
     backgroundColor: theme.colors.palette.background.paper,
 
     ...(isFocused

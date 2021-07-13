@@ -48,6 +48,7 @@ const ToAccount = ({
   error,
   onAccountChange,
   onCurrencyChange,
+  swapKYCInvalid,
 }: {
   currencies: (CryptoCurrency | TokenCurrency)[],
   currency: ?(CryptoCurrency | TokenCurrency),
@@ -58,6 +59,7 @@ const ToAccount = ({
   error?: Error,
   onAccountChange: (AccountLike, ?Account) => void,
   onCurrencyChange: (CryptoCurrency | TokenCurrency) => void,
+  swapKYCInvalid: ?boolean,
 }) => {
   const accounts = useSelector(shallowAccountsSelector);
   const {
@@ -132,7 +134,7 @@ const ToAccount = ({
           value={currency}
           autoFocus={true}
           onChange={setCurrency}
-          isDisabled={!currencies?.length}
+          isDisabled={!currencies?.length || !!swapKYCInvalid}
         />
       </Box>
       <Box>
@@ -142,7 +144,7 @@ const ToAccount = ({
         {hasMaybeValidAccounts || !currency ? (
           <SelectAccount
             id="swap-form-to-account"
-            isDisabled={!currency}
+            isDisabled={!currency || !!swapKYCInvalid}
             accounts={availableAccounts}
             value={{ account, subAccount }}
             onChange={setAccount}

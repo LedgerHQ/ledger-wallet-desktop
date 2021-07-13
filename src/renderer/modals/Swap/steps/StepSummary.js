@@ -12,7 +12,8 @@ import {
   getAccountName,
   getAccountUnit,
 } from "@ledgerhq/live-common/lib/account";
-import { swapAcceptedProviderIdsSelector } from "~/renderer/reducers/settings";
+import { swapAcceptedProvidersSelector } from "~/renderer/reducers/settings";
+import { swapAcceptProvider } from "~/renderer/actions/settings";
 import { useDispatch, useSelector } from "react-redux";
 import FormattedVal from "~/renderer/components/FormattedVal";
 import ArrowSeparator from "~/renderer/components/ArrowSeparator";
@@ -30,7 +31,6 @@ import IconExternalLink from "~/renderer/icons/ExternalLink";
 import FakeLink from "~/renderer/components/FakeLink";
 import { CountdownTimerWrapper } from "~/renderer/screens/exchange/swap/Form/Footer";
 import CountdownTimer from "~/renderer/components/CountdownTimer";
-import { swapAcceptProviderTOS } from "~/renderer/actions/settings";
 import type { ExchangeRate, Exchange } from "@ledgerhq/live-common/lib/exchange/swap/types";
 import IconLock from "~/renderer/icons/Lock";
 import IconLockOpen from "~/renderer/icons/LockOpen";
@@ -68,10 +68,10 @@ const StepSummary = ({
   checkedDisclaimer: boolean,
   onSwitchAccept: () => any,
 }) => {
-  const swapAcceptedproviderIds = useSelector(swapAcceptedProviderIdsSelector);
+  const swapAcceptedproviders = useSelector(swapAcceptedProvidersSelector);
   const { exchange, exchangeRate } = swap;
   const { provider, toAmount } = exchangeRate;
-  const alreadyAcceptedTerms = swapAcceptedproviderIds.includes(swap.exchangeRate.provider);
+  const alreadyAcceptedTerms = (swapAcceptedproviders || []).includes(swap.exchangeRate.provider);
   const { fromAccount, toAccount } = exchange;
   const fromAmount = transaction.amount;
   const lockColor = useTheme("colors.palette.text.shade100");
@@ -251,10 +251,10 @@ export const StepSummaryFooter = ({
 }) => {
   const dispatch = useDispatch();
   const lockColor = useTheme("colors.palette.text.shade50");
-  const swapAcceptedproviderIds = useSelector(swapAcceptedProviderIdsSelector);
-  const alreadyAcceptedTerms = swapAcceptedproviderIds.includes(provider);
+  const swapAcceptedproviders = useSelector(swapAcceptedProvidersSelector);
+  const alreadyAcceptedTerms = (swapAcceptedproviders || []).includes(provider);
   const onBeforeContinue = useCallback(() => {
-    dispatch(swapAcceptProviderTOS(provider));
+    dispatch(swapAcceptProvider(provider));
     onContinue();
   }, [dispatch, onContinue, provider]);
 

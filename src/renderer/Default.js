@@ -10,7 +10,7 @@ import Settings from "~/renderer/screens/settings";
 import Accounts from "~/renderer/screens/accounts";
 import Manager from "~/renderer/screens/manager";
 import Exchange from "~/renderer/screens/exchange";
-import Swap from "~/renderer/screens/exchange/swap/FormOrHistory";
+import Swap from "~/renderer/screens/exchange/swap";
 import Account from "~/renderer/screens/account";
 import WalletConnect from "~/renderer/screens/WalletConnect";
 import Asset from "~/renderer/screens/asset";

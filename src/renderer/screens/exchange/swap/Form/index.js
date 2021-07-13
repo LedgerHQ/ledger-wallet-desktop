@@ -18,17 +18,14 @@ import getExchangeRates from "@ledgerhq/live-common/lib/exchange/swap/getExchang
 import { getAbandonSeedAddress } from "@ledgerhq/live-common/lib/currencies";
 import ArrowSeparator from "~/renderer/components/ArrowSeparator";
 import {
-  swapSupportedCurrenciesSelector,
-  flattenedSwapSupportedCurrenciesSelector,
-} from "~/renderer/reducers/settings";
-import {
   reducer,
-  getValidToCurrencies,
-  getEnabledTradeMethods,
+  getSupportedCurrencies,
+  getEnabledTradingMethods,
 } from "@ledgerhq/live-common/lib/exchange/swap/logic";
 import type { ExchangeRate } from "@ledgerhq/live-common/lib/exchange/swap/types";
 import { getAccountBridge } from "@ledgerhq/live-common/lib/bridge";
 import { getAccountCurrency, getMainAccount } from "@ledgerhq/live-common/lib/account";
+import { AccessDeniedError } from "@ledgerhq/live-common/lib/errors";
 import Box from "~/renderer/components/Box";
 
 import FromAccount from "~/renderer/screens/exchange/swap/Form/FromAccount";
@@ -40,6 +37,7 @@ import TradeMethod from "~/renderer/screens/exchange/swap/Form/TradeMethod";
 import AnimatedArrows from "./AnimatedArrows";
 import CurrencyDownStatusAlert from "~/renderer/components/CurrencyDownStatusAlert";
 import { openModal } from "~/renderer/actions/modals";
+import { swapKYCSelector } from "~/renderer/reducers/settings";
 
 type Method = "fixed" | "float";
 type Props = {
@@ -47,8 +45,8 @@ type Props = {
   defaultAccount?: ?AccountLike,
   defaultParentAccount?: ?Account,
   setTabIndex: number => void,
-  tradeMethod: Method,
-  setTradeMethod: Method => void,
+  providers: *,
+  provider: string,
 };
 
 const Form = ({
@@ -56,14 +54,16 @@ const Form = ({
   defaultAccount,
   defaultParentAccount,
   setTabIndex,
-  tradeMethod,
-  setTradeMethod,
+  providers,
+  provider,
 }: Props) => {
   const modalsState = useSelector(modalsStateSelector);
   const reduxDispatch = useDispatch();
-  const selectableCurrencies = useSelector(swapSupportedCurrenciesSelector);
-  const flattenedCurrencies = useSelector(flattenedSwapSupportedCurrenciesSelector);
+  const swapKYC = useSelector(swapKYCSelector);
+  const providerKYC = swapKYC[provider];
+  const selectableCurrencies = getSupportedCurrencies({ providers, provider });
   const [shouldFocusOnAmountNonce, setShouldFocusOnAmountNonce] = useState(0);
+  const [tradeMethod, setTradeMethod] = useState<Method>("fixed");
 
   const [state, dispatch] = useReducer(reducer, {
     useAllAmount: false,
@@ -88,24 +88,31 @@ const Form = ({
   }));
 
   const canContinue = !bridgePending && !Object.keys(status.errors).length && exchangeRate;
+  // Nb user _needs_ to update the app so if we've seen this modal once in this session, we're still KO
+  const swapKYCInvalid = !!modalsState.MODAL_SWAP_UNAUTHORIZED_RATES;
 
   const resetRate = useCallback(() => {
-    if (!modalsState.MODAL_SWAP || !modalsState.MODAL_SWAP.isOpened) {
+    if (!swapKYCInvalid && (!modalsState.MODAL_SWAP || !modalsState.MODAL_SWAP.isOpened)) {
       dispatch({ type: "onResetRate", payload: {} });
     }
-  }, [modalsState]);
+  }, [swapKYCInvalid, modalsState.MODAL_SWAP]);
 
   const enabledTradeMethods = useMemo(
     () =>
       fromCurrency && toCurrency
-        ? getEnabledTradeMethods({ selectableCurrencies, fromCurrency, toCurrency })
+        ? getEnabledTradingMethods({ providers, provider, fromCurrency, toCurrency })
         : [],
-    [fromCurrency, selectableCurrencies, toCurrency],
+    [fromCurrency, provider, providers, toCurrency],
   );
 
   const validToCurrencies = useMemo(
-    () => getValidToCurrencies({ selectableCurrencies, fromCurrency }),
-    [fromCurrency, selectableCurrencies],
+    () =>
+      getSupportedCurrencies({
+        providers,
+        fromCurrency: fromCurrency || undefined,
+        provider,
+      }),
+    [fromCurrency, provider, providers],
   );
 
   const onCompleteSwap = useCallback(() => setTabIndex(1), [setTabIndex]);
@@ -204,16 +211,22 @@ const Form = ({
         return;
       dispatch({ type: "onSetLoadingRates", payload: { loadingRates: true } });
       try {
+        // $FlowFixMe forgot to add the third param to the type of getExchangeRates
         const rates: Array<ExchangeRate> = await getExchangeRates(
           { fromAccount: account, fromParentAccount: parentAccount, toAccount, toParentAccount },
           transaction,
+          providerKYC?.id,
         );
         if (ignore) return;
-        let rate = rates.find(rate => rate.tradeMethod === tradeMethod);
-        rate = rate || rates.find(rate => !rate.tradeMethod); // Fixme, we need the trademethod even on error
-
+        const rate = rates.find(
+          rate => rate.tradeMethod === tradeMethod && rate.provider === provider,
+        );
         if (rate?.error) {
           dispatch({ type: "onSetError", payload: { error: rate.error } });
+          if (rate.error instanceof AccessDeniedError) {
+            // Show the modal for invalid KYC
+            reduxDispatch(openModal("MODAL_SWAP_UNAUTHORIZED_RATES"));
+          }
         } else if (rate) {
           dispatch({
             type: "onSetExchangeRate",
@@ -245,6 +258,9 @@ const Form = ({
     parentAccount,
     toParentAccount,
     toCurrency,
+    providerKYC,
+    provider,
+    reduxDispatch,
   ]);
 
   // Deselect the tradeMethod if not available for current pair
@@ -258,7 +274,7 @@ const Form = ({
     }
   }, [enabledTradeMethods, setTradeMethod, tradeMethod]);
 
-  const { provider, magnitudeAwareRate, toAmount } = exchangeRate || {};
+  const { magnitudeAwareRate, toAmount } = exchangeRate || {};
   const { amount = BigNumber(0) } = transaction || {};
 
   return (
@@ -277,17 +293,20 @@ const Form = ({
           rate={magnitudeAwareRate}
           onExpireRates={resetRate}
           ratesExpiration={isTimerVisible ? ratesExpiration : undefined}
+          error={error}
+          swapKYCInvalid={swapKYCInvalid}
         />
         <Box horizontal px={20} pt={16}>
           <Box flex={1}>
             <FromAccount
+              swapKYCInvalid={swapKYCInvalid}
               status={status}
               key={fromCurrency?.id || "fromAccount"}
               account={account ? getMainAccount(account, parentAccount) : null}
               amount={amount}
               currency={fromCurrency}
               error={error}
-              currencies={flattenedCurrencies}
+              currencies={selectableCurrencies}
               onCurrencyChange={fromCurrency =>
                 dispatch({ type: "onSetFromCurrency", payload: { fromCurrency } })
               }
@@ -295,6 +314,7 @@ const Form = ({
               useAllAmount={useAllAmount}
             />
             <FromAmount
+              swapKYCInvalid={swapKYCInvalid}
               key={`${account?.id || "none"}-fromAmount`}
               shouldFocusNonce={shouldFocusOnAmountNonce}
               status={status}
@@ -310,11 +330,12 @@ const Form = ({
             style={{ marginTop: 63, marginBottom: 25 }}
             Icon={AnimatedArrows}
             size={16}
-            disabled={!canFlipForm}
+            disabled={!canFlipForm || swapKYCInvalid}
             onClick={onFlipForm}
           />
           <Box flex={1}>
             <ToAccount
+              swapKYCInvalid={swapKYCInvalid}
               key={toCurrency?.id || "toAccount"}
               account={toAccount ? getMainAccount(toAccount, toParentAccount) : null}
               amount={toAmount}
@@ -329,7 +350,7 @@ const Form = ({
                 bumpFocusNonce();
               }}
             />
-            <ToAmount amount={toAmount} currency={toCurrency} />
+            <ToAmount swapKYCInvalid={swapKYCInvalid} amount={toAmount} currency={toCurrency} />
           </Box>
         </Box>
         <Footer onStartSwap={onStartSwap} canContinue={!!canContinue} />

@@ -34,6 +34,8 @@ const TradeMethod = ({
   ratesExpiration,
   onExpireRates,
   loadingRates,
+  error,
+  swapKYCInvalid,
 }: {
   tradeMethod: Modes,
   setTradeMethod: Modes => void,
@@ -45,9 +47,11 @@ const TradeMethod = ({
   ratesExpiration?: ?Date,
   onExpireRates: () => void,
   loadingRates: boolean,
+  error: ?Error,
+  swapKYCInvalid: ?boolean,
 }) => (
   <Box px={20} pt={16} backgroundColor={"colors.palette.background.paper"}>
-    <Box horizontal alignItems={"center"}>
+    <Box horizontal alignItems={"center"} style={{ minHeight: 30 }}>
       <Text color="palette.text.shade100" ff="Inter|SemiBold" mr={1} fontSize={5}>
         <Trans i18nKey={`swap.form.tradeMethod.title`} />
       </Text>
@@ -72,6 +76,8 @@ const TradeMethod = ({
         ratesExpiration={ratesExpiration}
         onExpireRates={onExpireRates}
         loadingRates={loadingRates}
+        error={error}
+        swapKYCInvalid={swapKYCInvalid}
       />
     </Box>
     <SeparatorLine />

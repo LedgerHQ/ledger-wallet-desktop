@@ -230,12 +230,93 @@
       "subtitle": "Go to manager and update {{appName}} app to swap assets.",
       "cta": "Go to manager"
     },
-    "kyc": {
+    "providers": {
+      "title": "Choose a provider to swap crypto",
+      "learnMore": "What is Swap?",
+      "kycRequired": "KYC Required",
+      "wyre": {
+        "bullets": [
+          "US-only (soon Europe, Africa and Asia)",
+          "Multi coins and tokens",
+          "Centralized"
+        ]
+      },
+      "changelly": {
+        "bullets": ["BTC, ETH, USDT and 50+ others", "Multi-currency", "Centralized"]
+      },
+      "paraswap": {
+        "bullets": [
+          "Connect to 30+ DEXs (Uniswap, SushiSwap,...)",
+          "Ethereum & ERC20 tokens",
+          "Decentralized & Trustless"
+        ]
+      },
+      "cta": "Continue",
+      "kyc": {
+        "notAvailable": "{{provider}} is unavailable in your location",
+        "status": {
+          "required": "KYC Required",
+          "pending": "KYC Pending",
+          "approved": "KYC Approved!",
+          "closed": "KYC Rejected"
+        }
+      }
+    },
+    "ip": {
       "title": "Welcome to Swap",
-      "subtitle": "Exchange crypto assets directly from your Ledger device. This service is not available in the US and a few other countries.",
+      "subtitle": "Exchange crypto assets directly from your Ledger device.",
       "disclaimer": "By continuing, you accept that your location data will be shared with third party service providers in order for them to comply with their AML/KYC procedures."
     },
+    "kyc": {
+      "updateRequired": "We are unable to complete the KYC process until you update the application",
+      "wyre": {
+        "disclaimer": "Your information is collected by LEDGER on behalf of and transferred to WYRE for KYC purposes. For more information, please check our",
+        "policy": "Privacy Policy",
+        "title": "Verify your identity",
+        "subtitle": "Please enter your information to swap with Wyre.",
+        "pending": {
+          "cta": "Continue",
+          "title": "KYC submitted for approval",
+          "subtitle": "Your KYC has been submitted and is pending approval.",
+          "link": "Learn more about KYC"
+        },
+        "closed": {
+          "cta": "Reset KYC",
+          "title": "KYC application rejected",
+          "subtitle": "Wyre rejected the data you provided for KYC purposes",
+          "link": "Learn more about KYC"
+        },
+        "form": {
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "street1": "Street Address Line 1",
+          "street2": "Street Address Line 2",
+          "city": "City",
+          "state": "State",
+          "country": "Country",
+          "postalCode": "Zip Code",
+          "dateOfBirth": "Date of birth",
+
+          "firstNamePlaceholder": "Enter your first name",
+          "lastNamePlaceholder": "Enter your last name",
+          "street1Placeholder": "Eg. 13, Maple street",
+          "street2Placeholder": "Eg. 13, Maple street",
+          "cityPlaceholder": "Eg. San José",
+          "postalCodePlaceholder": "Enter your 5 digit Zip code",
+          "dateOfBirthPlaceholder": "MM/DD/YYYY",
+
+          "firstNameError": "Enter your first name to continue",
+          "lastNameError": "Enter your last name to continue",
+          "street1Error": "Enter your address",
+          "cityError": "Enter the city you live in the USA",
+          "postalCodeError": "Enter a valid US ZIP code",
+          "dateOfBirthError": "Enter your date of birth"
+        }
+      }
+    },
     "form": {
+      "resetKYC": "Reset your KYC and Update Live to Swap with Wyre",
+      "resetKYCCTA": "Reset KYC",
       "amount": "Amount",
       "from": {
         "title": "From",
@@ -267,6 +348,11 @@
       "noApp": "{{currencyName}} app not installed.",
       "outdatedApp": "{{currencyName}} app update available.",
       "loadingRates": "Loading rates..."
+    },
+    "unauthorizedRatesModal": {
+      "title": "Ledger Live needs an update",
+      "subtitle": "Please update Ledger Live to the latest version, and re verify your identity to swap with wyre",
+      "cta": "Reset verification"
     },
     "modal": {
       "title": "Swap",
@@ -3089,6 +3175,10 @@
     "FirmwareOrAppUpdateRequired": {
       "title": "Firmware or app update required",
       "description": "Please use the Manager to uninstall all apps then check if a firmware update is available before reinstalling them"
+    },
+    "LatestFirmwareVersionRequired": {
+      "title": "Update Nano Firmware",
+      "description": "Please update your devices Firmware to the latest version to access this feature"
     },
     "FirmwareNotRecognized": {
       "title": "Device firmware is not recognized",

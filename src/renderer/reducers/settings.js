@@ -8,20 +8,15 @@ import {
   getCryptoCurrencyById,
   listSupportedFiats,
   getFiatCurrencyByTicker,
-  isCurrencySupported,
 } from "@ledgerhq/live-common/lib/currencies";
 import type { DeviceModelId } from "@ledgerhq/devices";
-import type { CryptoCurrency, Currency, TokenCurrency } from "@ledgerhq/live-common/lib/types";
+import type { CryptoCurrency, Currency } from "@ledgerhq/live-common/lib/types";
 import type { DeviceModelInfo } from "@ledgerhq/live-common/lib/types/manager";
 import type { PortfolioRange } from "@ledgerhq/live-common/lib/portfolio/v2/types";
 import { getEnv } from "@ledgerhq/live-common/lib/env";
 import { getLanguages } from "~/config/languages";
 import type { State } from ".";
 import { osLangAndRegionSelector } from "~/renderer/reducers/application";
-import { isCurrencyExchangeSupported } from "@ledgerhq/live-common/lib/exchange";
-import uniq from "lodash/uniq";
-import { findCryptoCurrencyById, findTokenById } from "@ledgerhq/cryptoassets";
-import type { AvailableProvider } from "@ledgerhq/live-common/lib/exchange/swap/types";
 
 export type CurrencySettings = {
   confirmationsNb: number,
@@ -73,7 +68,6 @@ export type SettingsState = {
   counterValue: string,
   preferredDeviceModel: DeviceModelId,
   hasInstalledApps: boolean,
-  hasAcceptedSwapKYC: boolean,
   lastSeenDevice: ?DeviceModelInfo,
   language: ?string,
   theme: ?string,
@@ -102,12 +96,21 @@ export type SettingsState = {
   carouselVisibility: number,
   starredAccountIds?: string[],
   blacklistedTokenIds: string[],
-  swapAcceptedProviderIds: string[],
   deepLinkUrl: ?string,
   firstTimeLend: boolean,
-  swapProviders?: AvailableProvider[],
   showClearCacheBanner: boolean,
   fullNodeEnabled: boolean,
+  swap: {
+    hasAcceptedIPSharing: false,
+    selectableCurrencies: string[],
+    acceptedProviders: string[],
+    KYC: {
+      [string]: {
+        id: string,
+        status: string,
+      },
+    },
+  },
 };
 
 const defaultsForCurrency: Currency => CurrencySettings = crypto => {
@@ -144,15 +147,18 @@ const INITIAL_STATE: SettingsState = {
   preferredDeviceModel: "nanoS",
   hasInstalledApps: true,
   carouselVisibility: 0,
-  hasAcceptedSwapKYC: false,
   lastSeenDevice: null,
   blacklistedTokenIds: [],
-  swapAcceptedProviderIds: [],
   deepLinkUrl: null,
   firstTimeLend: false,
-  swapProviders: [],
   showClearCacheBanner: false,
   fullNodeEnabled: false,
+  swap: {
+    hasAcceptedIPSharing: false,
+    acceptedProviders: [],
+    selectableCurrencies: [],
+    KYC: {},
+  },
 };
 
 const pairHash = (from, to) => `${from.ticker}_${to.ticker}`;
@@ -231,13 +237,6 @@ const handlers: Object = {
       blacklistedTokenIds: [...ids, tokenId],
     };
   },
-  SWAP_ACCEPT_PROVIDER_TOS: (state: SettingsState, { payload: providerId }) => {
-    const ids = state.swapAcceptedProviderIds;
-    return {
-      ...state,
-      swapAcceptedProviderIds: ids.includes(providerId) ? ids : [...ids, providerId],
-    };
-  },
   LAST_SEEN_DEVICE_INFO: (
     state: SettingsState,
     { payload: dmi }: { payload: DeviceModelInfo },
@@ -253,9 +252,44 @@ const handlers: Object = {
     ...state,
     firstTimeLend: false,
   }),
-  SETTINGS_SET_SWAP_PROVIDERS: (state: SettingsState, { swapProviders }) => ({
+  SET_SWAP_SELECTABLE_CURRENCIES: (state: SettingsState, { payload }) => ({
     ...state,
-    swapProviders,
+    swap: {
+      ...state.swap,
+      selectableCurrencies: payload,
+    },
+  }),
+  SET_SWAP_KYC: (state: SettingsState, { payload }) => {
+    const { provider, id, status } = payload;
+    const KYC = { ...state.swap.KYC };
+
+    if (id && status) {
+      KYC[provider] = { id, status };
+    } else {
+      delete KYC[provider];
+    }
+
+    return {
+      ...state,
+      swap: {
+        ...state.swap,
+        KYC,
+      },
+    };
+  },
+  SET_SWAP_ACCEPTED_IP_SHARING: (state: SettingsState, { payload }) => ({
+    ...state,
+    swap: {
+      ...state.swap,
+      hasAcceptedIPSharing: payload,
+    },
+  }),
+  ACCEPT_SWAP_PROVIDER: (state: SettingsState, { payload }) => ({
+    ...state,
+    swap: {
+      ...state.swap,
+      acceptedProviders: [...new Set([...(state.swap?.acceptedProviders || []), payload])],
+    },
   }),
   // used to debug performance of redux updates
   DEBUG_TICK: state => ({ ...state }),
@@ -372,10 +406,7 @@ export const shareAnalyticsSelector = (state: State) => state.settings.shareAnal
 export const selectedTimeRangeSelector = (state: State) => state.settings.selectedTimeRange;
 export const hasInstalledAppsSelector = (state: State) => state.settings.hasInstalledApps;
 export const carouselVisibilitySelector = (state: State) => state.settings.carouselVisibility;
-export const hasAcceptedSwapKYCSelector = (state: State) => state.settings.hasAcceptedSwapKYC;
 export const blacklistedTokenIdsSelector = (state: State) => state.settings.blacklistedTokenIds;
-export const swapAcceptedProviderIdsSelector = (state: State) =>
-  state.settings.swapAcceptedProviderIds;
 export const hasCompletedOnboardingSelector = (state: State) =>
   state.settings.hasCompletedOnboarding;
 
@@ -392,65 +423,18 @@ export const hideEmptyTokenAccountsSelector = (state: State) =>
 
 export const lastSeenDeviceSelector = (state: State) => state.settings.lastSeenDevice;
 
-export const swapProvidersSelector = (state: Object) => state.settings.swapProviders;
+export const swapHasAcceptedIPSharingSelector = (state: State) =>
+  state.settings.swap.hasAcceptedIPSharing;
+
+export const swapSelectableCurrenciesSelector = (state: Object) =>
+  state.settings.swap.selectableCurrencies;
+
+export const swapAcceptedProvidersSelector = (state: State) =>
+  state.settings.swap.acceptedProviders;
+
+export const swapKYCSelector = (state: Object) => state.settings.swap.KYC;
+
 export const showClearCacheBannerSelector = (state: Object) => state.settings.showClearCacheBanner;
-
-export const swapSupportedCurrenciesSelector: OutputSelector<
-  State,
-  void,
-  { [string]: (TokenCurrency | CryptoCurrency)[] },
-> = createSelector(swapProvidersSelector, swapProviders => {
-  if (!swapProviders) return {};
-
-  const swapSupportedCurrenciesByTradeMethod = {};
-
-  // TODO eventually this will no longer be enough, since a pair could be from
-  // different providers and a swap will not be available. A more deeply nested
-  // structure with provider -> method -> currencies will be needed or a different
-  // data structure. Until then, this is provider agnostic.
-  swapProviders.forEach(({ supportedCurrencies, tradeMethod }) => {
-    // For debugging/dev, allow disabling a method for a coin, comma separated values
-    // SWAP_DISABLE_FLOAT/SWAP_DISABLE_FIXED="coinid1,coinid2,coinid3"
-    const disabledCoinsForFloat = (process.env.SWAP_DISABLE_FLOAT || "").split(",");
-    const disabledCoinsForFixed = (process.env.SWAP_DISABLE_FIXED || "").split(",");
-    supportedCurrencies = supportedCurrencies.filter(
-      id =>
-        !(tradeMethod === "float" && disabledCoinsForFloat.includes(id)) &&
-        !(tradeMethod === "fixed" && disabledCoinsForFixed.includes(id)),
-    );
-
-    const tokenCurrencies = supportedCurrencies
-      .map(findTokenById)
-      .filter(Boolean)
-      .filter(t => !t.delisted);
-
-    const cryptoCurrencies = supportedCurrencies
-      .map(findCryptoCurrencyById)
-      .filter(Boolean)
-      .filter(isCurrencySupported);
-
-    swapSupportedCurrenciesByTradeMethod[tradeMethod] = [
-      ...cryptoCurrencies,
-      ...tokenCurrencies,
-    ].filter(isCurrencyExchangeSupported);
-  });
-
-  return swapSupportedCurrenciesByTradeMethod;
-});
-
-// NB As long as a currency exists in _any_ tradeMethod it's a valid From currency,
-// for the To currency, we need to check the pair exists in at least one of the methods
-export const flattenedSwapSupportedCurrenciesSelector: OutputSelector<
-  State,
-  void,
-  (TokenCurrency | CryptoCurrency)[],
-> = createSelector(swapSupportedCurrenciesSelector, swapSupportedCurrencies => {
-  const out = [];
-  for (const tradeMethod in swapSupportedCurrencies) {
-    out.push(...swapSupportedCurrencies[tradeMethod]);
-  }
-  return uniq(out);
-});
 
 export const exportSettingsSelector: OutputSelector<State, void, *> = createSelector(
   counterValueCurrencySelector,

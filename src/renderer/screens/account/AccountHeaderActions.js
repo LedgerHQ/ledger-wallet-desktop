@@ -6,7 +6,7 @@ import { useSelector, connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
 import type { Account, AccountLike } from "@ledgerhq/live-common/lib/types";
-import { flattenedSwapSupportedCurrenciesSelector } from "~/renderer/reducers/settings";
+import { swapSelectableCurrenciesSelector } from "~/renderer/reducers/settings";
 import Tooltip from "~/renderer/components/Tooltip";
 import {
   isAccountEmpty,
@@ -99,7 +99,7 @@ const AccountHeaderActions = ({ account, parentAccount, openModal, t }: Props) =
   const availableOnCompound = !!summary;
 
   const availableOnBuy = isCurrencySupported("BUY", currency);
-  const availableOnSwap = useSelector(flattenedSwapSupportedCurrenciesSelector);
+  const availableOnSwap = useSelector(swapSelectableCurrenciesSelector);
   const history = useHistory();
 
   const onBuy = useCallback(() => {
@@ -200,11 +200,11 @@ const AccountHeaderActions = ({ account, parentAccount, openModal, t }: Props) =
       : []),
   ];
 
-  const canBuySwap = availableOnBuy || availableOnSwap.includes(currency);
+  const canBuySwap = availableOnBuy || availableOnSwap.includes(currency.id);
   const BuySwapHeader = () => (
     <>
       {availableOnBuy ? <BuyActionDefault onClick={onBuy} /> : null}
-      {availableOnSwap.includes(currency) ? <SwapActionDefault onClick={onSwap} /> : null}
+      {availableOnSwap.includes(currency.id) ? <SwapActionDefault onClick={onSwap} /> : null}
       {manageActions && manageActions.length > 0 ? (
         <DropDownSelector
           border

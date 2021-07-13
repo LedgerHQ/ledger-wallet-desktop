@@ -17,6 +17,7 @@ import Input from "~/renderer/components/Input";
 import Text from "~/renderer/components/Text";
 import Switch from "~/renderer/components/Switch";
 import { AmountRequired } from "@ledgerhq/errors";
+import { AccessDeniedError } from "@ledgerhq/live-common/lib/errors";
 
 const InputRight = styled(Box).attrs(() => ({
   ff: "Inter|Medium",
@@ -48,6 +49,7 @@ const FromAmount = ({
   onToggleUseAllAmount,
   onAmountChange,
   shouldFocusNonce,
+  swapKYCInvalid,
 }: {
   currency: ?(CryptoCurrency | TokenCurrency),
   amount: BigNumber,
@@ -58,10 +60,13 @@ const FromAmount = ({
   onAmountChange: BigNumber => void,
   onToggleUseAllAmount?: () => void,
   shouldFocusNonce: ?number,
+  swapKYCInvalid: ?boolean,
 }) => {
   const unit = currency && currency.units[0];
   const amountError = amount.gt(0) && (error || status.errors?.gasPrice || status.errors?.amount);
-  const hideError = useAllAmount && amountError && amountError instanceof AmountRequired;
+  const hideError =
+    (useAllAmount && amountError && amountError instanceof AmountRequired) ||
+    (error && error instanceof AccessDeniedError);
   const amountInputRef = useRef(null);
 
   useEffect(() => {
@@ -89,7 +94,7 @@ const FromAmount = ({
           <Switch
             small
             isChecked={!!useAllAmount}
-            disabled={!onToggleUseAllAmount}
+            disabled={!onToggleUseAllAmount || !!swapKYCInvalid}
             onChange={onToggleUseAllAmount}
           />
         </Box>
@@ -105,7 +110,7 @@ const FromAmount = ({
             key={unit.code}
             defaultUnit={unit}
             value={isLoading ? null : amount}
-            disabled={useAllAmount}
+            disabled={useAllAmount || !!swapKYCInvalid}
             onChange={onAmountChange}
             renderRight={<InputRight>{unit.code}</InputRight>}
           />
