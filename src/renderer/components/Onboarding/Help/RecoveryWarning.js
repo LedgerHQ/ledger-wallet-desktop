@@ -19,7 +19,7 @@ const PinHelpContainer = styled.div`
 export default function RecoveryWarning() {
   const { t } = useTranslation();
 
-  const onClickLink = useCallback(() => openURL(urls.appSupport), []);
+  const onClickLink = useCallback(() => openURL(urls.faq), []);
 
   return (
     <ScrollArea>
